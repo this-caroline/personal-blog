@@ -10,34 +10,7 @@ const metadata = createPageMetadata({
     "In-progress projects and technical experiments by Caroline Marques, including local AI infrastructure and a personal grammar assistant.",
 });
 
-const projects = [
-  {
-    name: "Local LLM Home Infrastructure",
-    status: "In progress",
-    description:
-      "A local AI service layer for personal applications and assistants. I want one useful, private inference setup instead of a different pile of scripts for every idea.",
-    focusAreas: ["Ollama", "private inference", "shared APIs"],
-    benchNotes: [
-      "Making local inference reusable across small personal tools",
-      "Learning where latency and model choice change the experience",
-      "Keeping the service boundaries loose enough to experiment",
-    ],
-    links: [{ label: "Repository notes coming when it is ready to share." }],
-  },
-  {
-    name: "Personal Grammar Assistant",
-    status: "Exploring",
-    description:
-      "A browser extension experiment that uses a local LLM for grammar, phrasing, and tone without sending every half-finished sentence to the cloud.",
-    focusAreas: ["browser APIs", "local AI", "writing feedback"],
-    benchNotes: [
-      "Finding feedback that is useful without becoming annoying",
-      "Keeping local processing visible and trustworthy",
-      "Remembering recurring mistakes without pretending the model is always right",
-    ],
-    links: [{ label: "Still at the sketch-and-prototype stage." }],
-  },
-] as const;
+import { projects } from "@config/projects";
 ---
 
 <BaseLayout metadata={metadata}>

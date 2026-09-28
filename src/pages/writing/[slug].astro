@@ -2,6 +2,7 @@
 import { getCollection, render } from "astro:content";
 
 import BaseLayout from "@layouts/BaseLayout.astro";
+import { siteIdentity } from "@config/site";
 import { createBlogPostingJsonLd } from "@lib/jsonLd";
 import { createPageMetadata } from "@lib/metadata";
 import {
@@ -61,7 +62,7 @@ const articleJsonLdInput = {
       <dl class="article-meta">
         <div>
           <dt>Author</dt>
-          <dd>Caroline Marques</dd>
+          <dd>{siteIdentity.name}</dd>
         </div>
         <div>
           <dt>Published</dt>
@@ -101,9 +102,9 @@ const articleJsonLdInput = {
 
     <footer class="author-note">
       <p>
-        Written by <a href="/about">Caroline Marques</a>, a software engineer in
-        Munich working across architecture, infrastructure, and product-minded
-        software.
+        Written by <a href="/about">{siteIdentity.name}</a>, a software engineer
+        in Munich working across architecture, infrastructure, and
+        product-minded software.
       </p>
     </footer>
   </article>

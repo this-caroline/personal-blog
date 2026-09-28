@@ -77,10 +77,10 @@ interface OutsideSoftwareCard {
   readonly label: string;
   readonly title: string;
   readonly description: string;
-  readonly detail?: string;
+  readonly detail?: string | undefined;
   readonly link?: {
     readonly label: string;
-    readonly url: string;
+    readonly url?: string | undefined;
   };
 }
 
@@ -98,8 +98,7 @@ const outsideSoftware: readonly OutsideSoftwareCard[] = [
       "I spend an unreasonable amount of time thinking about board games.",
     link: {
       label: "See what I've been playing ->",
-      url:
-        boardGameGeekProfile?.url ?? "https://boardgamegeek.com/profile/ex_emo",
+      url: boardGameGeekProfile?.url,
     },
   },
   {
@@ -119,7 +118,7 @@ const outsideSoftware: readonly OutsideSoftwareCard[] = [
     <header class="about-hero">
       <div class="about-hero-copy">
         <p class="eyebrow">About</p>
-        <h1>Caroline Marques</h1>
+        <h1>{siteIdentity.name}</h1>
         <p class="about-intro">
           Hi, I'm Caroline. I'm a software engineer in Munich, Germany, usually
           working somewhere between backend systems, product development, and
@@ -131,7 +130,7 @@ const outsideSoftware: readonly OutsideSoftwareCard[] = [
         </p>
       </div>
 
-      <aside class="profile-window" aria-label="Caroline Marques profile">
+      <aside class="profile-window" aria-label={`${siteIdentity.name} profile`}>
         <div class="profile-window-bar">
           <span>caroline.profile</span>
           <span class="profile-window-light" aria-hidden="true"></span>
@@ -261,7 +260,14 @@ const outsideSoftware: readonly OutsideSoftwareCard[] = [
       <div class="about-links" aria-label="More about Caroline Marques">
         <a href="/projects">Projects</a>
         <a href="/writing">Writing</a>
-        <a href="https://boardgamegeek.com/profile/ex_emo">BoardGameGeek</a>
+        <a
+          href={
+            siteIdentity.profiles.find((p) => p.label === "BoardGameGeek")
+              ?.url ?? "https://boardgamegeek.com/profile/ex_emo"
+          }
+        >
+          BoardGameGeek
+        </a>
       </div>
     </section>
   </article>

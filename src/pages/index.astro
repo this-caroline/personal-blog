@@ -5,6 +5,7 @@ import { getCollection } from "astro:content";
 import carolineSnowboardImage from "@assets/caroline-snowboard.png";
 import ArticleSummary from "@components/ArticleSummary.astro";
 import { currentSnapshot } from "@config/current";
+import { currentProjects } from "@config/projects";
 import { siteIdentity } from "@config/site";
 import BaseLayout from "@layouts/BaseLayout.astro";
 import { createPageMetadata } from "@lib/metadata";
@@ -28,7 +29,7 @@ const engineeringStories = [
     title: "Japanese, beyond translated strings",
     label: "Internationalization",
     description:
-      "I helped take Japanese support from an initial idea to production for an international software product.",
+      "Led the rollout of Japanese for an international software product, from the first idea through implementation and delivery.",
     technicalNote:
       "The interesting part was treating language, locale, and product behavior as one system—not a bag of translated strings.",
   },
@@ -50,84 +51,42 @@ const engineeringStories = [
   },
 ] as const;
 
-interface ProjectCardFrame {
-  readonly name: string;
-  readonly status: string;
-  readonly description: string;
-  readonly focusAreas: readonly string[];
-  readonly linkLabel: string;
-  readonly terminalLines?: readonly string[];
-}
-
 interface SnapshotCardFrame {
   readonly name: string;
   readonly label: string;
   readonly description: string;
-  readonly detail?: string;
+  readonly detail?: string | undefined;
   readonly link?: {
     readonly label: string;
-    readonly url: string;
+    readonly url?: string | undefined; // Changed to optional
   };
 }
 
-const currentProjects: readonly ProjectCardFrame[] = [
-  {
-    name: "Local AI at home",
-    status: "In progress",
-    description:
-      "A local AI service and shared inference environment for personal applications and assistants.",
-    focusAreas: [
-      "local model serving",
-      "private inference",
-      "latency",
-      "model selection",
-      "application integrations",
-    ],
-    terminalLines: [
-      "$ ollama ps",
-      "local inference: online",
-      "cloud dependency: optional",
-    ],
-    linkLabel: "GitHub soon - stay tuned.",
-  },
-  {
-    name: "Personal Grammar Assistant",
-    status: "Exploring",
-    description:
-      "A Chrome extension using a local LLM to correct grammar, suggest clearer phrasing, detect harsh or dismissive tone, and learn recurring writing mistakes.",
-    focusAreas: [
-      "browser APIs",
-      "frontend",
-      "local AI",
-      "privacy-minded product behavior",
-    ],
-    linkLabel: "Designed around local inference and privacy.",
-  },
-];
+// `currentProjects` is sourced from `src/config/projects.ts`
+
+const getEntry = (label: string) =>
+  currentSnapshot.entries.find((e) => e.label === label);
 
 const personalSnapshots: readonly SnapshotCardFrame[] = [
   {
-    name: "Outside",
+    name: getEntry("Offline")?.title ?? "Outside",
     label: "Mountains & climbing",
-    description:
-      "Most weeks, I'm working on V5s and V6s. When there is snow, the mountains tend to win.",
+    description: getEntry("Offline")?.description ?? "",
   },
   {
-    name: "Board games",
+    name: getEntry("Playing")?.title ?? "Board games",
     label: "Tabletop Games",
-    description:
-      "I spend an unreasonable amount of time thinking about board games.",
+    description: getEntry("Playing")?.description ?? "",
     link: {
       label: "See what I've been playing ->",
-      url:
-        boardGameGeekProfile?.url ?? "https://boardgamegeek.com/profile/ex_emo",
+      url: boardGameGeekProfile?.url,
     },
   },
   {
-    name: "Books",
+    name: getEntry("Reading")?.title ?? "Books",
     label: "Last read",
-    description: "Quarto de Despejo",
-    detail: "Carolina Maria de Jesus",
+    description: getEntry("Reading")?.title ?? "",
+    detail: getEntry("Reading")?.description,
   },
 ];
 ---
@@ -136,7 +95,7 @@ const personalSnapshots: readonly SnapshotCardFrame[] = [
   <section class="hero" aria-labelledby="page-title">
     <div class="hero-copy-column">
       <p class="eyebrow">Software Engineer</p>
-      <h1 id="page-title">Caroline Marques</h1>
+      <h1 id="page-title">{siteIdentity.name}</h1>
       <p class="hero-copy">
         I build reliable software with a backend-leaning full-stack perspective,
         a soft spot for architecture and infrastructure, and a practical
@@ -232,7 +191,7 @@ const personalSnapshots: readonly SnapshotCardFrame[] = [
               <li>{focusArea}</li>
             ))}
           </ul>
-          {project.terminalLines !== undefined && <pre
+          {"terminalLines" in project && <pre
             class="terminal-note"
             aria-hidden="true"
           >
