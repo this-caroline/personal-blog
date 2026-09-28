@@ -1,0 +1,43 @@
+---
+import { siteIdentity } from "@config/site";
+import type { PageMetadata } from "@lib/metadata";
+
+import "../styles/global.css";
+
+interface Props {
+  readonly metadata: PageMetadata;
+}
+
+const { metadata } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{metadata.title}</title>
+    <meta name="description" content={metadata.description} />
+    <link rel="canonical" href={metadata.canonicalUrl.href} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={metadata.openGraphTitle} />
+    <meta property="og:description" content={metadata.openGraphDescription} />
+    <meta property="og:url" content={metadata.canonicalUrl.href} />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="identity-link" href="/" aria-label="Caroline Marques homepage">
+        <span>{siteIdentity.name}</span>
+        <span>{siteIdentity.professionalTitle}</span>
+      </a>
+    </header>
+    <main>
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <p>
+        {siteIdentity.name} · {siteIdentity.professionalTitle}
+      </p>
+    </footer>
+  </body>
+</html>

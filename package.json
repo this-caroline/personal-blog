@@ -1,0 +1,45 @@
+{
+  "name": "caroline-marques",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "packageManager": "pnpm@9.6.0",
+  "scripts": {
+    "dev": "ASTRO_TELEMETRY_DISABLED=1 astro dev",
+    "build": "ASTRO_TELEMETRY_DISABLED=1 astro build",
+    "preview": "ASTRO_TELEMETRY_DISABLED=1 astro preview",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint .",
+    "typecheck": "ASTRO_TELEMETRY_DISABLED=1 astro check",
+    "test": "vitest run",
+    "test:architecture": "vitest run tests/architecture",
+    "validate": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test:architecture && pnpm test && pnpm build"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^8.0.2",
+    "@astrojs/react": "^7.0.0",
+    "astro": "^7.3.5",
+    "react": "latest",
+    "react-dom": "latest"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@eslint/js": "latest",
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "eslint": "latest",
+    "eslint-plugin-astro": "latest",
+    "eslint-plugin-import-x": "latest",
+    "eslint-plugin-unused-imports": "latest",
+    "prettier": "^3.6.2",
+    "prettier-plugin-astro": "latest",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "latest",
+    "vitest": "latest"
+  }
+}

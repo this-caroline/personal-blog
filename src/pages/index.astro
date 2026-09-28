@@ -1,0 +1,14 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { createPageMetadata } from "@lib/metadata";
+
+const metadata = createPageMetadata({ pathname: "/" });
+---
+
+<BaseLayout metadata={metadata}>
+  <section class="intro" aria-labelledby="page-title">
+    <p class="eyebrow">Personal publishing hub</p>
+    <h1 id="page-title">Caroline Marques, Software Engineer</h1>
+    <p>A static-first home for writing, projects, and public profile links.</p>
+  </section>
+</BaseLayout>

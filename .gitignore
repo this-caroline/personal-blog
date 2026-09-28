@@ -1,0 +1,7 @@
+.astro/
+.pnpm-store/
+dist/
+node_modules/
+.DS_Store
+*.log
+docs/adr/
