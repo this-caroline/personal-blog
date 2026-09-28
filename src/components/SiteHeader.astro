@@ -2,10 +2,22 @@
 import { navigationLinks, siteIdentity } from "@config/site";
 
 const currentPath = Astro.url.pathname;
+
+const isCurrentPage = (path: string): boolean => {
+  if (path === "/") {
+    return currentPath === "/";
+  }
+
+  return currentPath === path || currentPath.startsWith(`${path}/`);
+};
 ---
 
 <header class="site-header">
-  <a class="identity-link" href="/" aria-label="Caroline Marques homepage">
+  <a
+    class="identity-link"
+    href="/"
+    aria-label={`${siteIdentity.name} homepage`}
+  >
     <span>{siteIdentity.name}</span>
     <span>{siteIdentity.professionalTitle}</span>
   </a>
@@ -13,7 +25,7 @@ const currentPath = Astro.url.pathname;
     {navigationLinks.map((link) => (
       <a
         href={link.pathname}
-        aria-current={currentPath === link.pathname ? "page" : undefined}
+        aria-current={isCurrentPage(link.pathname) ? "page" : undefined}
       >
         {link.label}
       </a>

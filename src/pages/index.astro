@@ -1,8 +1,11 @@
 ---
+import { Image } from "astro:assets";
 import { getCollection } from "astro:content";
 
+import carolineSnowboardImage from "../assets/caroline-snowboard.png";
 import ArticleSummary from "@components/ArticleSummary.astro";
 import { currentSnapshot } from "@config/current";
+import { siteIdentity } from "@config/site";
 import BaseLayout from "@layouts/BaseLayout.astro";
 import { createPageMetadata } from "@lib/metadata";
 import { createPublishedArticles } from "@lib/writing";
@@ -15,6 +18,9 @@ const metadata = createPageMetadata({
 const articles = createPublishedArticles(await getCollection("writing")).slice(
   0,
   3,
+);
+const boardGameGeekProfile = siteIdentity.profiles.find(
+  (profile) => profile.label === "BoardGameGeek",
 );
 
 const engineeringStories = [
@@ -93,7 +99,8 @@ const personalSnapshots = [
       "I spend an unreasonable amount of time thinking about board games.",
     link: {
       label: "See what I've been playing ->",
-      url: "https://boardgamegeek.com/profile/ex_emo",
+      url:
+        boardGameGeekProfile?.url ?? "https://boardgamegeek.com/profile/ex_emo",
     },
   },
   {
@@ -167,7 +174,7 @@ const personalSnapshots = [
       <>
         <div class="article-list compact-list">
           {articles.map((article) => (
-            <ArticleSummary article={article} />
+            <ArticleSummary article={article} headingLevel="h3" />
           ))}
         </div>
         <p class="section-link">
@@ -250,11 +257,11 @@ const personalSnapshots = [
     </div>
     <div class="personal-editorial-grid">
       <figure class="editorial-image-frame personal-image-frame">
-        <img
-          src="/assets/caroline-snowboard.png"
+        <Image
+          src={carolineSnowboardImage}
           alt="Bit-art illustration of Caroline holding a snowboard in a snowy mountain scene."
-          width="1086"
-          height="1448"
+          width={1086}
+          height={1448}
           loading="lazy"
         />
       </figure>

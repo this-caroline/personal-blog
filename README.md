@@ -7,7 +7,6 @@ This repository is the engineering foundation for a static-first public website 
 - Astro
 - TypeScript in strict mode
 - MDX
-- React integration available for justified islands
 - pnpm
 - ESLint
 - Prettier
@@ -34,9 +33,13 @@ This checks formatting, linting, TypeScript, architecture tests, unit tests, and
 
 ## Architecture
 
-The site is static-first. The default implementation should be Astro components, semantic HTML, and CSS. React is available only for features that need stateful client-side behavior.
+The site is static-first. The default implementation should be Astro components, semantic HTML, and CSS.
 
 Read `AGENTS.md`, `docs/architecture.md`, and relevant ADRs before adding new patterns.
+
+## Licensing
+
+The MIT license applies to the source code in this repository. Written articles, personal images, and original artwork are not automatically MIT-licensed unless that is explicitly stated.
 
 ## Agent Workflow
 

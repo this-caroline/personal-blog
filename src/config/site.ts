@@ -10,6 +10,7 @@ export interface SiteIdentity {
   readonly canonicalOrigin: URL;
   readonly description: string;
   readonly socialImagePath: `/${string}`;
+  readonly socialImageAlt: string;
   readonly profiles: readonly SocialProfile[];
 }
 
@@ -20,8 +21,11 @@ export const siteIdentity: SiteIdentity = {
   canonicalOrigin: new URL("https://caroline-marques.com"),
   description:
     "Software engineering notes, personal projects, experiments, and other things from Caroline Marques.",
-  socialImagePath: "/social-preview.svg",
+  socialImagePath: "/social-preview.png",
+  socialImageAlt:
+    "Caroline Marques social preview for caroline-marques.com with a software engineering theme.",
   profiles: [
+    { label: "GitHub", url: "https://github.com/this-caroline" },
     { label: "BoardGameGeek", url: "https://boardgamegeek.com/profile/ex_emo" },
   ],
 };

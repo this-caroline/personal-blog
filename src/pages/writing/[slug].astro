@@ -7,7 +7,6 @@ import { createPageMetadata } from "@lib/metadata";
 import {
   createPublishedArticles,
   formatArticleDate,
-  frontmatterFor,
   type PublishedArticle,
 } from "@lib/writing";
 
@@ -25,7 +24,7 @@ export async function getStaticPaths() {
 }
 
 const { article } = Astro.props;
-const frontmatter = frontmatterFor(article.entry);
+const frontmatter = article.entry.data;
 const { Content } = await render(article.entry);
 const metadata = createPageMetadata({
   pathname: article.url,

@@ -68,6 +68,25 @@ img {
   height: auto;
 }
 
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -3rem;
+  z-index: 1000;
+  border: 2px solid var(--color-accent-strong);
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-weight: 700;
+  padding: 0.7rem 1rem;
+  text-decoration: none;
+  transition: top 160ms ease;
+}
+
+.skip-link:focus-visible {
+  top: 1rem;
+}
+
 .site-header,
 .site-footer,
 main {

@@ -13,6 +13,10 @@ const metadata = createPageMetadata({
   type: "profile",
 });
 
+const boardGameGeekProfile = siteIdentity.profiles.find(
+  (profile) => profile.label === "BoardGameGeek",
+);
+
 const profileFacts = [
   ["role", siteIdentity.professionalTitle],
   ["location", siteIdentity.location],
@@ -83,7 +87,8 @@ const outsideSoftware = [
       "I spend an unreasonable amount of time thinking about board games.",
     link: {
       label: "See what I've been playing ->",
-      url: "https://boardgamegeek.com/profile/ex_emo",
+      url:
+        boardGameGeekProfile?.url ?? "https://boardgamegeek.com/profile/ex_emo",
     },
   },
   {

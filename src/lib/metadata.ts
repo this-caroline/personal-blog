@@ -7,6 +7,10 @@ export interface PageMetadata {
   readonly description: string;
   readonly canonicalUrl: URL;
   readonly imageUrl: URL;
+  readonly imageType: `image/${string}`;
+  readonly imageWidth: number;
+  readonly imageHeight: number;
+  readonly imageAlt: string;
   readonly openGraphTitle: string;
   readonly openGraphDescription: string;
   readonly openGraphType: OpenGraphType;
@@ -20,6 +24,10 @@ export interface PageMetadataInput {
   readonly pathname: `/${string}`;
   readonly canonical?: URL;
   readonly image?: string | URL;
+  readonly imageType?: `image/${string}`;
+  readonly imageWidth?: number;
+  readonly imageHeight?: number;
+  readonly imageAlt?: string;
   readonly noindex?: boolean;
   readonly type?: OpenGraphType;
 }
@@ -27,25 +35,44 @@ export interface PageMetadataInput {
 export function createPageMetadata(input: PageMetadataInput): PageMetadata {
   const canonicalUrl =
     input.canonical ?? new URL(input.pathname, siteIdentity.canonicalOrigin);
-  const title =
-    input.fullTitle ??
-    (input.title === undefined
-      ? homePageTitle
-      : `${input.title} | ${defaultTitleSuffix}`);
+  const title = resolvePageTitle(input);
   const description = input.description ?? siteIdentity.description;
-  const imageUrl =
-    input.image instanceof URL
-      ? input.image
-      : new URL(input.image ?? siteIdentity.socialImagePath, canonicalUrl);
+  const imageUrl = resolveImageUrl(input, canonicalUrl);
 
   return {
     title,
     description,
     canonicalUrl,
     imageUrl,
+    imageType: input.imageType ?? "image/png",
+    imageWidth: input.imageWidth ?? 1200,
+    imageHeight: input.imageHeight ?? 630,
+    imageAlt: input.imageAlt ?? siteIdentity.socialImageAlt,
     openGraphTitle: title,
     openGraphDescription: description,
     openGraphType: input.type ?? "website",
     noindex: input.noindex ?? false,
   };
+}
+
+function resolvePageTitle(input: PageMetadataInput): string {
+  if (input.fullTitle !== undefined) {
+    return input.fullTitle;
+  }
+
+  if (input.title !== undefined) {
+    return `${input.title} | ${defaultTitleSuffix}`;
+  }
+
+  return homePageTitle;
+}
+
+function resolveImageUrl(input: PageMetadataInput, canonicalUrl: URL): URL {
+  if (input.image instanceof URL) {
+    return input.image;
+  }
+
+  const imagePath = input.image ?? siteIdentity.socialImagePath;
+
+  return new URL(imagePath, canonicalUrl);
 }

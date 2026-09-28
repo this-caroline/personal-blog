@@ -1,16 +1,14 @@
 ---
-import {
-  formatArticleDate,
-  frontmatterFor,
-  type PublishedArticle,
-} from "@lib/writing";
+import { formatArticleDate, type PublishedArticle } from "@lib/writing";
 
 interface Props {
   readonly article: PublishedArticle;
+  readonly headingLevel?: "h2" | "h3";
 }
 
-const { article } = Astro.props;
-const frontmatter = frontmatterFor(article.entry);
+const { article, headingLevel = "h2" } = Astro.props;
+const frontmatter = article.entry.data;
+const Heading = headingLevel;
 ---
 
 <article class="article-summary">
@@ -19,9 +17,9 @@ const frontmatter = frontmatterFor(article.entry);
       {formatArticleDate(frontmatter.publishedAt)}
     </time>
   </p>
-  <h2>
+  <Heading>
     <a href={article.url}>{frontmatter.title}</a>
-  </h2>
+  </Heading>
   <p>{frontmatter.description}</p>
   {frontmatter.tags.length > 0 && (
     <ul class="tag-list" aria-label="Article tags">

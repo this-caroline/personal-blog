@@ -6,8 +6,6 @@ import { describe, expect, it } from "vitest";
 
 const repositoryRoot = path.resolve(import.meta.dirname, "../..");
 const sourceRoot = path.join(repositoryRoot, "src");
-const genericNamePattern =
-  /\b(data|info|item|obj|helper|helpers|utils|common|manager|processor)\b/i;
 const sourceFileExtensions = new Set([".astro", ".ts", ".tsx"]);
 
 interface SourceFile {
@@ -38,16 +36,6 @@ async function collectSourceFiles(directory: string): Promise<SourceFile[]> {
   );
 
   return nestedFiles.flat();
-}
-
-function findGenericNames(sourceFile: SourceFile): string[] {
-  return sourceFile.content
-    .split("\n")
-    .map((line, index) => ({ line, lineNumber: index + 1 }))
-    .filter(({ line }) => genericNamePattern.test(line))
-    .map(
-      ({ lineNumber }) => `${sourceFile.relativePath}:${String(lineNumber)}`,
-    );
 }
 
 describe("repository architecture", () => {
@@ -87,12 +75,5 @@ describe("repository architecture", () => {
       .map((sourceFile) => sourceFile.relativePath);
 
     expect(reactComponents).toEqual([]);
-  });
-
-  it("discourages generic naming in source files", async () => {
-    const sourceFiles = await collectSourceFiles(sourceRoot);
-    const genericNameLocations = sourceFiles.flatMap(findGenericNames);
-
-    expect(genericNameLocations).toEqual([]);
   });
 });

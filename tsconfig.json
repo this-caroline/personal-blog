@@ -24,7 +24,8 @@
     "eslint.config.js",
     "prettier.config.js",
     "src/**/*",
-    "tests/**/*"
+    "tests/**/*",
+    "vitest.config.ts"
   ],
   "exclude": ["dist"]
 }

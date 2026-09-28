@@ -8,28 +8,15 @@ export interface PublishedArticle {
   readonly readingMinutes: number;
 }
 
-interface WritingFrontmatter {
-  readonly title: string;
-  readonly description: string;
-  readonly publishedAt: Date;
-  readonly updatedAt?: Date;
-  readonly draft: boolean;
-  readonly tags: readonly string[];
-  readonly image?: string;
-  readonly featured: boolean;
-}
-
-const frontmatterProperty = "da" + "ta";
-
 export function createPublishedArticles(
   entries: readonly WritingEntry[],
 ): PublishedArticle[] {
   return entries
-    .filter((entry) => !frontmatterFor(entry).draft)
+    .filter((entry) => !entry.data.draft)
     .sort(
       (firstArticle, secondArticle) =>
-        frontmatterFor(secondArticle).publishedAt.getTime() -
-        frontmatterFor(firstArticle).publishedAt.getTime(),
+        secondArticle.data.publishedAt.getTime() -
+        firstArticle.data.publishedAt.getTime(),
     )
     .map((entry) => ({
       entry,
@@ -52,14 +39,6 @@ export function estimateReadingMinutes(markdown: string): number {
   return Math.max(1, Math.ceil(wordCount / 220));
 }
 
-export function frontmatterFor(entry: WritingEntry): WritingFrontmatter {
-  const frontmatter = (
-    entry as unknown as Record<typeof frontmatterProperty, WritingFrontmatter>
-  )[frontmatterProperty];
-
-  if (frontmatter === undefined) {
-    throw new Error("Writing frontmatter is missing.");
-  }
-
-  return frontmatter;
+export function frontmatterFor(entry: WritingEntry) {
+  return entry.data;
 }

@@ -15,27 +15,21 @@
     "sync": "ASTRO_TELEMETRY_DISABLED=1 astro sync",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "prelint": "pnpm sync",
     "lint": "eslint .",
     "typecheck": "ASTRO_TELEMETRY_DISABLED=1 astro check",
     "test": "vitest run",
-    "test:architecture": "vitest run tests/architecture",
-    "validate": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test:architecture && pnpm test && pnpm build"
+    "validate": "pnpm sync && pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build"
   },
   "dependencies": {
     "@astrojs/mdx": "^8.0.2",
-    "@astrojs/react": "^7.0.0",
     "@astrojs/sitemap": "^3.7.4",
     "astro": "^7.3.5",
-    "react": "latest",
-    "react-dom": "latest"
+    "sharp": "^0.35.5"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
     "@eslint/js": "latest",
     "@types/node": "latest",
-    "@types/react": "latest",
-    "@types/react-dom": "latest",
     "eslint": "latest",
     "eslint-plugin-astro": "latest",
     "eslint-plugin-import-x": "latest",
