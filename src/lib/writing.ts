@@ -8,16 +8,31 @@ export interface PublishedArticle {
   readonly readingMinutes: number;
 }
 
+export interface CreatePublishedArticlesOptions {
+  readonly dev?: boolean;
+}
+
 export function createPublishedArticles(
   entries: readonly WritingEntry[],
+  options: CreatePublishedArticlesOptions = {},
 ): PublishedArticle[] {
-  return entries
-    .filter((entry) => !entry.data.draft)
-    .sort(
-      (firstArticle, secondArticle) =>
+  const isDevelopment = options.dev ?? import.meta.env.DEV;
+  const visibleEntries = isDevelopment
+    ? [...entries]
+    : entries.filter((entry) => !entry.data.draft);
+
+  return visibleEntries
+    .sort((firstArticle, secondArticle) => {
+      const publishedAtDifference =
         secondArticle.data.publishedAt.getTime() -
-        firstArticle.data.publishedAt.getTime(),
-    )
+        firstArticle.data.publishedAt.getTime();
+
+      if (publishedAtDifference !== 0) {
+        return publishedAtDifference;
+      }
+
+      return firstArticle.id.localeCompare(secondArticle.id);
+    })
     .map((entry) => ({
       entry,
       url: `/writing/${entry.id}` as const,
@@ -37,8 +52,4 @@ export function estimateReadingMinutes(markdown: string): number {
   const wordCount = markdown.trim().split(/\s+/u).filter(Boolean).length;
 
   return Math.max(1, Math.ceil(wordCount / 220));
-}
-
-export function frontmatterFor(entry: WritingEntry) {
-  return entry.data;
 }

@@ -6,12 +6,10 @@ export interface CurrentSnapshotEntry {
 }
 
 export interface CurrentSnapshot {
-  readonly updatedAtLabel: string;
   readonly entries: readonly CurrentSnapshotEntry[];
 }
 
 export const currentSnapshot: CurrentSnapshot = {
-  updatedAtLabel: "September 2026",
   entries: [
     {
       label: "Building",

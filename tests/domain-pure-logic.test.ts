@@ -2,11 +2,11 @@ import { describe, expect, it } from "vitest";
 
 import { createGlobalJsonLd, createBlogPostingJsonLd } from "../src/lib/jsonLd";
 import { createPageMetadata } from "../src/lib/metadata";
+import { buildRssFeedXml } from "../src/lib/rss";
 import {
   createPublishedArticles,
   estimateReadingMinutes,
 } from "../src/lib/writing";
-import { buildRssFeedXml } from "../src/pages/rss.xml";
 
 interface MockArticleData {
   readonly title: string;
@@ -16,7 +16,6 @@ interface MockArticleData {
   readonly draft: boolean;
   readonly tags: readonly string[];
   readonly image: string | undefined;
-  readonly featured: boolean;
 }
 
 interface MockArticleEntry {
@@ -36,7 +35,6 @@ interface MockArticleOverrides {
   readonly draft?: boolean;
   readonly tags?: readonly string[];
   readonly image?: string;
-  readonly featured?: boolean;
 }
 
 function createEntry(overrides: MockArticleOverrides = {}): MockArticleEntry {
@@ -48,7 +46,6 @@ function createEntry(overrides: MockArticleOverrides = {}): MockArticleEntry {
     draft: false,
     tags: ["engineering"],
     image: undefined,
-    featured: false,
   };
 
   const data: MockArticleData = {
@@ -67,9 +64,6 @@ function createEntry(overrides: MockArticleOverrides = {}): MockArticleEntry {
     ...(overrides.draft !== undefined ? { draft: overrides.draft } : {}),
     ...(overrides.tags !== undefined ? { tags: overrides.tags } : {}),
     ...(overrides.image !== undefined ? { image: overrides.image } : {}),
-    ...(overrides.featured !== undefined
-      ? { featured: overrides.featured }
-      : {}),
   };
 
   return {
@@ -80,7 +74,7 @@ function createEntry(overrides: MockArticleOverrides = {}): MockArticleEntry {
 }
 
 describe("writing logic", () => {
-  it("excludes drafts and sorts newest-first", () => {
+  it("excludes drafts and sorts newest-first with id as a tiebreaker", () => {
     const entries = [
       createEntry({
         id: "older",
@@ -95,20 +89,33 @@ describe("writing logic", () => {
         id: "newer",
         publishedAt: new Date("2025-02-01T00:00:00.000Z"),
       }),
+      createEntry({
+        id: "zebra",
+        publishedAt: new Date("2025-02-01T00:00:00.000Z"),
+      }),
+      createEntry({
+        id: "alpha",
+        publishedAt: new Date("2025-02-01T00:00:00.000Z"),
+      }),
     ];
 
-    const articles = createPublishedArticles(entries as never[]);
+    const articles = createPublishedArticles(entries as never[], {
+      dev: false,
+    });
 
     expect(articles.map((article) => article.entry.id)).toEqual([
+      "alpha",
       "newer",
+      "zebra",
       "older",
     ]);
   });
 
   it("generates article urls from entry ids", () => {
-    const articles = createPublishedArticles([
-      createEntry({ id: "hello-world" }),
-    ] as never[]);
+    const articles = createPublishedArticles(
+      [createEntry({ id: "hello-world" })] as never[],
+      { dev: false },
+    );
 
     expect(articles[0]?.url).toBe("/writing/hello-world");
   });
@@ -172,20 +179,29 @@ describe("JSON-LD", () => {
 });
 
 describe("RSS feed", () => {
-  it("escapes XML-sensitive content and omits drafts", () => {
-    const xml = buildRssFeedXml([
-      createEntry({
-        id: "escape-test",
-        title: "Special & <tag>",
-        description: 'A "quoted" post',
-        publishedAt: new Date("2024-03-01T00:00:00.000Z"),
-      }),
-      createEntry({ id: "draft-post", draft: true }),
-    ] as never[]);
+  it("escapes XML-sensitive content, omits drafts, and includes feed metadata", () => {
+    const xml = buildRssFeedXml(
+      [
+        createEntry({
+          id: "escape-test",
+          title: "Special & <tag>",
+          description: 'A "quoted" post',
+          publishedAt: new Date("2024-03-01T00:00:00.000Z"),
+        }),
+        createEntry({ id: "draft-post", draft: true }),
+      ] as never[],
+      { dev: false },
+    );
 
     expect(xml).toContain("Special &amp; &lt;tag&gt;");
     expect(xml).toContain("A &quot;quoted&quot; post");
     expect(xml).not.toContain("draft-post");
     expect(xml).toContain("https://caroline-marques.com/writing/escape-test");
+    expect(xml).toContain('xmlns:atom="http://www.w3.org/2005/Atom"');
+    expect(xml).toContain(
+      '<atom:link href="https://caroline-marques.com/rss.xml" rel="self" type="application/rss+xml" />',
+    );
+    expect(xml).toContain("<lastBuildDate>");
+    expect(xml).toContain("<language>en</language>");
   });
 });

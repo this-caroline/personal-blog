@@ -2,7 +2,7 @@
 import { Image } from "astro:assets";
 import { getCollection } from "astro:content";
 
-import carolineSnowboardImage from "../assets/caroline-snowboard.png";
+import carolineSnowboardImage from "@assets/caroline-snowboard.png";
 import ArticleSummary from "@components/ArticleSummary.astro";
 import { currentSnapshot } from "@config/current";
 import { siteIdentity } from "@config/site";
@@ -50,7 +50,27 @@ const engineeringStories = [
   },
 ] as const;
 
-const currentProjects = [
+interface ProjectCardFrame {
+  readonly name: string;
+  readonly status: string;
+  readonly description: string;
+  readonly focusAreas: readonly string[];
+  readonly linkLabel: string;
+  readonly terminalLines?: readonly string[];
+}
+
+interface SnapshotCardFrame {
+  readonly name: string;
+  readonly label: string;
+  readonly description: string;
+  readonly detail?: string;
+  readonly link?: {
+    readonly label: string;
+    readonly url: string;
+  };
+}
+
+const currentProjects: readonly ProjectCardFrame[] = [
   {
     name: "Local AI at home",
     status: "In progress",
@@ -83,9 +103,9 @@ const currentProjects = [
     ],
     linkLabel: "Designed around local inference and privacy.",
   },
-] as const;
+];
 
-const personalSnapshots = [
+const personalSnapshots: readonly SnapshotCardFrame[] = [
   {
     name: "Outside",
     label: "Mountains & climbing",
@@ -109,7 +129,7 @@ const personalSnapshots = [
     description: "Quarto de Despejo",
     detail: "Carolina Maria de Jesus",
   },
-] as const;
+];
 ---
 
 <BaseLayout metadata={metadata}>
@@ -145,7 +165,7 @@ const personalSnapshots = [
           </div>
         ))}
       </dl>
-      <p class="status-updated">Updated {currentSnapshot.updatedAtLabel}</p>
+      <p class="status-updated">Updated regularly</p>
     </aside>
   </section>
 
@@ -212,10 +232,12 @@ const personalSnapshots = [
               <li>{focusArea}</li>
             ))}
           </ul>
-          {"terminalLines" in project && <pre
+          {project.terminalLines !== undefined && <pre
             class="terminal-note"
-            aria-label="Decorative local AI status"
-          ><code>{project.terminalLines.join("\n")}</code></pre>}
+            aria-hidden="true"
+          >
+              <code>{project.terminalLines.join("\n")}</code>
+            </pre>}
           <p class="project-status-note">{project.linkLabel}</p>
         </article>
       ))}
@@ -262,6 +284,8 @@ const personalSnapshots = [
           alt="Bit-art illustration of Caroline holding a snowboard in a snowy mountain scene."
           width={1086}
           height={1448}
+          widths={[540, 1086]}
+          sizes="(max-width: 760px) 100vw, 50vw"
           loading="lazy"
         />
       </figure>
@@ -271,10 +295,10 @@ const personalSnapshots = [
             <p class="story-label">{snapshot.label}</p>
             <h3>{snapshot.name}</h3>
             <p>{snapshot.description}</p>
-            {"detail" in snapshot && (
+            {snapshot.detail !== undefined && (
               <p class="personal-detail">{snapshot.detail}</p>
             )}
-            {"link" in snapshot && (
+            {snapshot.link !== undefined && (
               <a href={snapshot.link.url}>{snapshot.link.label}</a>
             )}
           </article>

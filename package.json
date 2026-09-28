@@ -38,6 +38,7 @@
     "prettier-plugin-astro": "latest",
     "typescript": "^5.9.3",
     "typescript-eslint": "latest",
+    "vite-tsconfig-paths": "^5.1.4",
     "vitest": "latest"
   }
 }

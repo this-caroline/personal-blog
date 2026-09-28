@@ -26,10 +26,15 @@ const jsonLdGraphs = [createGlobalJsonLd(), ...jsonLd];
     {metadata.noindex && <meta name="robots" content="noindex, nofollow" />}
     <link rel="canonical" href={metadata.canonicalUrl.href} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="alternate" type="application/rss+xml" href="/rss.xml" />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      href="/rss.xml"
+      title="Caroline Marques RSS feed"
+    />
     <meta property="og:type" content={metadata.openGraphType} />
-    <meta property="og:title" content={metadata.openGraphTitle} />
-    <meta property="og:description" content={metadata.openGraphDescription} />
+    <meta property="og:title" content={metadata.title} />
+    <meta property="og:description" content={metadata.description} />
     <meta property="og:url" content={metadata.canonicalUrl.href} />
     <meta property="og:image" content={metadata.imageUrl.href} />
     <meta property="og:image:type" content={metadata.imageType} />
@@ -38,8 +43,8 @@ const jsonLdGraphs = [createGlobalJsonLd(), ...jsonLd];
     <meta property="og:image:alt" content={metadata.imageAlt} />
     <meta property="og:site_name" content={siteIdentity.name} />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={metadata.openGraphTitle} />
-    <meta name="twitter:description" content={metadata.openGraphDescription} />
+    <meta name="twitter:title" content={metadata.title} />
+    <meta name="twitter:description" content={metadata.description} />
     <meta name="twitter:image" content={metadata.imageUrl.href} />
     <meta name="twitter:image:alt" content={metadata.imageAlt} />
     {jsonLdGraphs.map((graph) => (

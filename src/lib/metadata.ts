@@ -11,8 +11,6 @@ export interface PageMetadata {
   readonly imageWidth: number;
   readonly imageHeight: number;
   readonly imageAlt: string;
-  readonly openGraphTitle: string;
-  readonly openGraphDescription: string;
   readonly openGraphType: OpenGraphType;
   readonly noindex: boolean;
 }
@@ -22,7 +20,6 @@ export interface PageMetadataInput {
   readonly fullTitle?: string;
   readonly description?: string;
   readonly pathname: `/${string}`;
-  readonly canonical?: URL;
   readonly image?: string | URL;
   readonly imageType?: `image/${string}`;
   readonly imageWidth?: number;
@@ -33,8 +30,7 @@ export interface PageMetadataInput {
 }
 
 export function createPageMetadata(input: PageMetadataInput): PageMetadata {
-  const canonicalUrl =
-    input.canonical ?? new URL(input.pathname, siteIdentity.canonicalOrigin);
+  const canonicalUrl = new URL(input.pathname, siteIdentity.canonicalOrigin);
   const title = resolvePageTitle(input);
   const description = input.description ?? siteIdentity.description;
   const imageUrl = resolveImageUrl(input, canonicalUrl);
@@ -48,8 +44,6 @@ export function createPageMetadata(input: PageMetadataInput): PageMetadata {
     imageWidth: input.imageWidth ?? 1200,
     imageHeight: input.imageHeight ?? 630,
     imageAlt: input.imageAlt ?? siteIdentity.socialImageAlt,
-    openGraphTitle: title,
-    openGraphDescription: description,
     openGraphType: input.type ?? "website",
     noindex: input.noindex ?? false,
   };

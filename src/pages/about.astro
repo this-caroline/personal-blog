@@ -73,7 +73,18 @@ const practiceNotes = [
 
 const currentInterests = currentSnapshot.entries.slice(0, 2);
 
-const outsideSoftware = [
+interface OutsideSoftwareCard {
+  readonly label: string;
+  readonly title: string;
+  readonly description: string;
+  readonly detail?: string;
+  readonly link?: {
+    readonly label: string;
+    readonly url: string;
+  };
+}
+
+const outsideSoftware: readonly OutsideSoftwareCard[] = [
   {
     label: "Bouldering",
     title: "Climbing",
@@ -97,7 +108,7 @@ const outsideSoftware = [
     description: "Quarto de Despejo",
     detail: "Carolina Maria de Jesus",
   },
-] as const;
+];
 ---
 
 <BaseLayout
@@ -165,16 +176,12 @@ const outsideSoftware = [
         <h2 id="build-title">Things I care about when building software</h2>
       </div>
       <div class="principle-grid">
-        {buildingPrinciples.map((principle) => (
+        {buildingPrinciples.map((principle, index) => (
           <section
             class="principle-note"
-            aria-labelledby={`principle-${principle.title.toLowerCase().replaceAll(" ", "-")}`}
+            aria-labelledby={`principle-${String(index)}`}
           >
-            <h3
-              id={`principle-${principle.title.toLowerCase().replaceAll(" ", "-")}`}
-            >
-              {principle.title}
-            </h3>
+            <h3 id={`principle-${String(index)}`}>{principle.title}</h3>
             <p>{principle.description}</p>
           </section>
         ))}
@@ -231,10 +238,10 @@ const outsideSoftware = [
             <p class="status-label">{snapshot.label}</p>
             <h3>{snapshot.title}</h3>
             <p>{snapshot.description}</p>
-            {"detail" in snapshot && (
+            {snapshot.detail !== undefined && (
               <p class="outside-detail">{snapshot.detail}</p>
             )}
-            {"link" in snapshot && (
+            {snapshot.link !== undefined && (
               <a href={snapshot.link.url}>{snapshot.link.label}</a>
             )}
           </article>
