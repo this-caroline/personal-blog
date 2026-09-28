@@ -9,6 +9,7 @@
   "packageManager": "pnpm@9.6.0",
   "scripts": {
     "dev": "ASTRO_TELEMETRY_DISABLED=1 astro dev",
+    "stop": "ASTRO_TELEMETRY_DISABLED=1 astro dev stop",
     "build": "ASTRO_TELEMETRY_DISABLED=1 astro build",
     "preview": "ASTRO_TELEMETRY_DISABLED=1 astro preview",
     "format": "prettier --write .",
@@ -22,6 +23,7 @@
   "dependencies": {
     "@astrojs/mdx": "^8.0.2",
     "@astrojs/react": "^7.0.0",
+    "@astrojs/sitemap": "^3.7.4",
     "astro": "^7.3.5",
     "react": "latest",
     "react-dom": "latest"

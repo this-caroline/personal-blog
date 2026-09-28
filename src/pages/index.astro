@@ -1,14 +1,281 @@
 ---
+import { getCollection } from "astro:content";
+
+import ArticleSummary from "@components/ArticleSummary.astro";
+import { currentSnapshot } from "@config/current";
 import BaseLayout from "@layouts/BaseLayout.astro";
 import { createPageMetadata } from "@lib/metadata";
+import { createPublishedArticles } from "@lib/writing";
 
-const metadata = createPageMetadata({ pathname: "/" });
+const metadata = createPageMetadata({
+  pathname: "/",
+  description:
+    "Caroline Marques writes about software engineering, architecture, infrastructure, practical AI, and the projects and ideas occupying her brain.",
+});
+const articles = createPublishedArticles(await getCollection("writing")).slice(
+  0,
+  3,
+);
+
+const engineeringStories = [
+  {
+    title: "Japanese, beyond translated strings",
+    label: "Internationalization",
+    description:
+      "I helped take Japanese support from an initial idea to production for an international software product.",
+    technicalNote:
+      "The interesting part was treating language, locale, and product behavior as one system—not a bag of translated strings.",
+  },
+  {
+    title: "Long-lived keys → short-lived tokens",
+    label: "Infrastructure / OIDC",
+    description:
+      "I moved deployment authentication from long-lived AWS credentials to short-lived credentials through GitLab OIDC.",
+    technicalNote:
+      "It was a useful lesson in making the safer path the ordinary path across services.",
+  },
+  {
+    title: "Finding the sharp edges",
+    label: "Security / pentesting",
+    description:
+      "I worked directly with product security and pentesting, including hardening work that contributed to successful certification.",
+    technicalNote:
+      "The best part was following findings back into real product behavior instead of treating security as checklist theater.",
+  },
+] as const;
+
+const currentProjects = [
+  {
+    name: "Local AI at home",
+    status: "In progress",
+    description:
+      "A local AI service and shared inference environment for personal applications and assistants.",
+    focusAreas: [
+      "local model serving",
+      "private inference",
+      "latency",
+      "model selection",
+      "application integrations",
+    ],
+    terminalLines: [
+      "$ ollama ps",
+      "local inference: online",
+      "cloud dependency: optional",
+    ],
+    linkLabel: "GitHub soon - stay tuned.",
+  },
+  {
+    name: "Personal Grammar Assistant",
+    status: "Exploring",
+    description:
+      "A Chrome extension using a local LLM to correct grammar, suggest clearer phrasing, detect harsh or dismissive tone, and learn recurring writing mistakes.",
+    focusAreas: [
+      "browser APIs",
+      "frontend",
+      "local AI",
+      "privacy-minded product behavior",
+    ],
+    linkLabel: "Designed around local inference and privacy.",
+  },
+] as const;
+
+const personalSnapshots = [
+  {
+    name: "Outside",
+    label: "Mountains & climbing",
+    description:
+      "Most weeks, I'm working on V5s and V6s. When there is snow, the mountains tend to win.",
+  },
+  {
+    name: "Board games",
+    label: "Tabletop Games",
+    description:
+      "I spend an unreasonable amount of time thinking about board games.",
+    link: {
+      label: "See what I've been playing ->",
+      url: "https://boardgamegeek.com/profile/ex_emo",
+    },
+  },
+  {
+    name: "Books",
+    label: "Last read",
+    description: "Quarto de Despejo",
+    detail: "Carolina Maria de Jesus",
+  },
+] as const;
 ---
 
 <BaseLayout metadata={metadata}>
-  <section class="intro" aria-labelledby="page-title">
-    <p class="eyebrow">Personal publishing hub</p>
-    <h1 id="page-title">Caroline Marques, Software Engineer</h1>
-    <p>A static-first home for writing, projects, and public profile links.</p>
+  <section class="hero" aria-labelledby="page-title">
+    <div class="hero-copy-column">
+      <p class="eyebrow">Software Engineer</p>
+      <h1 id="page-title">Caroline Marques</h1>
+      <p class="hero-copy">
+        I build reliable software with a backend-leaning full-stack perspective,
+        a soft spot for architecture and infrastructure, and a practical
+        curiosity about AI that actually helps people get work done.
+      </p>
+      <div class="hero-actions" aria-label="Primary links">
+        <a class="button-link" href="/writing">
+          Read my writing
+        </a>
+        <a class="button-link secondary" href="/projects">
+          See what I'm building
+        </a>
+      </div>
+    </div>
+
+    <aside class="status-window" aria-label="Caroline right now">
+      <div class="status-window-bar">
+        <span>Currently</span>
+        <span class="status-light" aria-hidden="true"></span>
+      </div>
+      <dl class="status-list">
+        {currentSnapshot.entries.map((entry) => (
+          <div>
+            <dt>{entry.label}</dt>
+            <dd>{entry.value}</dd>
+          </div>
+        ))}
+      </dl>
+      <p class="status-updated">Updated {currentSnapshot.updatedAtLabel}</p>
+    </aside>
+  </section>
+
+  <section
+    class="content-section writing-section"
+    aria-labelledby="latest-writing-title"
+  >
+    <div class="section-heading">
+      <p class="eyebrow">Latest writing</p>
+      <h2 id="latest-writing-title">Notes from the workbench</h2>
+    </div>
+    {articles.length === 0 ? (
+      <article class="writing-soon">
+        <span class="writing-signal" aria-hidden="true"></span>
+        <div>
+          <p class="story-label">Writing soon</p>
+          <h3>Field notes are taking shape.</h3>
+          <p>
+            First up: local LLMs at home, a personal grammar assistant, and
+            lessons from OIDC and internationalization—the parts that were
+            interesting in practice.
+          </p>
+          <a href="/writing">Visit the writing desk →</a>
+        </div>
+      </article>
+    ) : (
+      <>
+        <div class="article-list compact-list">
+          {articles.map((article) => (
+            <ArticleSummary article={article} />
+          ))}
+        </div>
+        <p class="section-link">
+          <a href="/writing">View all writing</a>
+        </p>
+      </>
+    )}
+  </section>
+
+  <section
+    class="content-section workbench-section"
+    aria-labelledby="building-title"
+  >
+    <div class="section-heading">
+      <p class="eyebrow">Workbench</p>
+      <h2 id="building-title">What I'm building</h2>
+      <p class="section-intro">
+        Useful tools, technical experiments, and ideas that are still allowed to
+        have rough edges.
+      </p>
+    </div>
+    <div class="workbench-grid">
+      {currentProjects.map((project, index) => (
+        <article class:list={["workbench-card", { featured: index === 0 }]}>
+          <div class="workbench-card-header">
+            <div>
+              <p class="story-label">{project.status}</p>
+              <h3>{project.name}</h3>
+            </div>
+            <span class="pixel-badge" aria-hidden="true"></span>
+          </div>
+          <p>{project.description}</p>
+          <ul class="focus-list" aria-label={`${project.name} current areas`}>
+            {project.focusAreas.map((focusArea) => (
+              <li>{focusArea}</li>
+            ))}
+          </ul>
+          {"terminalLines" in project && <pre
+            class="terminal-note"
+            aria-label="Decorative local AI status"
+          ><code>{project.terminalLines.join("\n")}</code></pre>}
+          <p class="project-status-note">{project.linkLabel}</p>
+        </article>
+      ))}
+    </div>
+    <p class="section-link">
+      <a href="/projects">Everything on the workbench →</a>
+    </p>
+  </section>
+
+  <section
+    class="content-section story-section"
+    aria-labelledby="featured-title"
+  >
+    <div class="section-heading">
+      <p class="eyebrow">Selected engineering stories</p>
+      <h2 id="featured-title">A few interesting problems I've worked on</h2>
+      <p class="section-intro">
+        Not an employment timeline—just three problems that changed how I think
+        about building software.
+      </p>
+    </div>
+    <div class="story-grid">
+      {engineeringStories.map((story) => (
+        <article class="story-card">
+          <p class="story-label">{story.label}</p>
+          <h3>{story.title}</h3>
+          <p>{story.description}</p>
+          <p class="story-note">{story.technicalNote}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section
+    class="content-section personal-section"
+    aria-labelledby="away-title"
+  >
+    <div class="section-heading">
+      <p class="eyebrow">Away from the keyboard</p>
+      <h2 id="away-title">Elsewhere in my brain</h2>
+    </div>
+    <div class="personal-editorial-grid">
+      <figure class="editorial-image-frame personal-image-frame">
+        <img
+          src="/assets/caroline-snowboard.png"
+          alt="Bit-art illustration of Caroline holding a snowboard in a snowy mountain scene."
+          width="1086"
+          height="1448"
+          loading="lazy"
+        />
+      </figure>
+      <div class="personal-grid">
+        {personalSnapshots.map((snapshot) => (
+          <article class="personal-tile">
+            <p class="story-label">{snapshot.label}</p>
+            <h3>{snapshot.name}</h3>
+            <p>{snapshot.description}</p>
+            {"detail" in snapshot && (
+              <p class="personal-detail">{snapshot.detail}</p>
+            )}
+            {"link" in snapshot && (
+              <a href={snapshot.link.url}>{snapshot.link.label}</a>
+            )}
+          </article>
+        ))}
+      </div>
+    </div>
   </section>
 </BaseLayout>

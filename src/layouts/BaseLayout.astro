@@ -1,14 +1,18 @@
 ---
-import { siteIdentity } from "@config/site";
+import SiteFooter from "@components/SiteFooter.astro";
+import SiteHeader from "@components/SiteHeader.astro";
+import { createGlobalJsonLd, type JsonLdNode } from "@lib/jsonLd";
 import type { PageMetadata } from "@lib/metadata";
 
 import "../styles/global.css";
 
 interface Props {
   readonly metadata: PageMetadata;
+  readonly jsonLd?: readonly JsonLdNode[];
 }
 
-const { metadata } = Astro.props;
+const { metadata, jsonLd = [] } = Astro.props;
+const jsonLdGraphs = [createGlobalJsonLd(), ...jsonLd];
 ---
 
 <!doctype html>
@@ -18,26 +22,29 @@ const { metadata } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{metadata.title}</title>
     <meta name="description" content={metadata.description} />
+    {metadata.noindex && <meta name="robots" content="noindex, nofollow" />}
     <link rel="canonical" href={metadata.canonicalUrl.href} />
-    <meta property="og:type" content="website" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate" type="application/rss+xml" href="/rss.xml" />
+    <meta property="og:type" content={metadata.openGraphType} />
     <meta property="og:title" content={metadata.openGraphTitle} />
     <meta property="og:description" content={metadata.openGraphDescription} />
     <meta property="og:url" content={metadata.canonicalUrl.href} />
+    <meta property="og:image" content={metadata.imageUrl.href} />
+    <meta property="og:site_name" content="Caroline Marques" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={metadata.openGraphTitle} />
+    <meta name="twitter:description" content={metadata.openGraphDescription} />
+    <meta name="twitter:image" content={metadata.imageUrl.href} />
+    {jsonLdGraphs.map((graph) => (
+      <script type="application/ld+json" set:html={JSON.stringify(graph)} />
+    ))}
   </head>
   <body>
-    <header class="site-header">
-      <a class="identity-link" href="/" aria-label="Caroline Marques homepage">
-        <span>{siteIdentity.name}</span>
-        <span>{siteIdentity.professionalTitle}</span>
-      </a>
-    </header>
+    <SiteHeader />
     <main>
       <slot />
     </main>
-    <footer class="site-footer">
-      <p>
-        {siteIdentity.name} · {siteIdentity.professionalTitle}
-      </p>
-    </footer>
+    <SiteFooter />
   </body>
 </html>

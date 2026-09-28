@@ -1,0 +1,111 @@
+---
+import { getCollection, render } from "astro:content";
+
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { createBlogPostingJsonLd } from "@lib/jsonLd";
+import { createPageMetadata } from "@lib/metadata";
+import {
+  createPublishedArticles,
+  formatArticleDate,
+  frontmatterFor,
+  type PublishedArticle,
+} from "@lib/writing";
+
+interface Props {
+  readonly article: PublishedArticle;
+}
+
+export async function getStaticPaths() {
+  const articles = createPublishedArticles(await getCollection("writing"));
+
+  return articles.map((article) => ({
+    params: { slug: article.entry.id },
+    props: { article },
+  }));
+}
+
+const { article } = Astro.props;
+const frontmatter = frontmatterFor(article.entry);
+const { Content } = await render(article.entry);
+const metadata = createPageMetadata({
+  pathname: article.url,
+  title: frontmatter.title,
+  description: frontmatter.description,
+  type: "article",
+  ...(frontmatter.image === undefined ? {} : { image: frontmatter.image }),
+});
+const imageUrl =
+  frontmatter.image === undefined
+    ? undefined
+    : new URL(frontmatter.image, metadata.canonicalUrl);
+const articleJsonLdInput = {
+  canonicalUrl: metadata.canonicalUrl,
+  title: frontmatter.title,
+  description: frontmatter.description,
+  publishedAt: frontmatter.publishedAt,
+  ...(frontmatter.updatedAt === undefined
+    ? {}
+    : { updatedAt: frontmatter.updatedAt }),
+  ...(imageUrl === undefined ? {} : { imageUrl }),
+};
+---
+
+<BaseLayout
+  metadata={metadata}
+  jsonLd={[createBlogPostingJsonLd(articleJsonLdInput)]}
+>
+  <article class="article-page">
+    <header class="article-header">
+      <p class="eyebrow">Writing</p>
+      <h1>{frontmatter.title}</h1>
+      <p>{frontmatter.description}</p>
+      <dl class="article-meta">
+        <div>
+          <dt>Author</dt>
+          <dd>Caroline Marques</dd>
+        </div>
+        <div>
+          <dt>Published</dt>
+          <dd>
+            <time datetime={frontmatter.publishedAt.toISOString()}>
+              {formatArticleDate(frontmatter.publishedAt)}
+            </time>
+          </dd>
+        </div>
+        {frontmatter.updatedAt !== undefined && (
+          <div>
+            <dt>Updated</dt>
+            <dd>
+              <time datetime={frontmatter.updatedAt.toISOString()}>
+                {formatArticleDate(frontmatter.updatedAt)}
+              </time>
+            </dd>
+          </div>
+        )}
+        <div>
+          <dt>Reading time</dt>
+          <dd>{article.readingMinutes} min read</dd>
+        </div>
+      </dl>
+      {frontmatter.tags.length > 0 && (
+        <ul class="tag-list" aria-label="Article tags">
+          {frontmatter.tags.map((tag) => (
+            <li>{tag}</li>
+          ))}
+        </ul>
+      )}
+    </header>
+
+    <div class="article-body">
+      <Content />
+    </div>
+
+    <footer class="author-note">
+      <p>
+        Written by <a href="/about">Caroline Marques</a>, a software engineer in
+        Munich working across architecture, infrastructure, and product-minded
+        software.
+      </p>
+    </footer>
+  </article>
+</BaseLayout>

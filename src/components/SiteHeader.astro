@@ -1,0 +1,22 @@
+---
+import { navigationLinks, siteIdentity } from "@config/site";
+
+const currentPath = Astro.url.pathname;
+---
+
+<header class="site-header">
+  <a class="identity-link" href="/" aria-label="Caroline Marques homepage">
+    <span>{siteIdentity.name}</span>
+    <span>{siteIdentity.professionalTitle}</span>
+  </a>
+  <nav class="primary-nav" aria-label="Primary navigation">
+    {navigationLinks.map((link) => (
+      <a
+        href={link.pathname}
+        aria-current={currentPath === link.pathname ? "page" : undefined}
+      >
+        {link.label}
+      </a>
+    ))}
+  </nav>
+</header>

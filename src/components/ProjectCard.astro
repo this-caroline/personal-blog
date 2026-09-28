@@ -1,0 +1,60 @@
+---
+export interface ProjectLink {
+  readonly label: string;
+  readonly url?: string;
+}
+
+export interface ProjectCardModel {
+  readonly name: string;
+  readonly description: string;
+  readonly status: string;
+  readonly focusAreas?: readonly string[];
+  readonly benchNotes?: readonly string[];
+  readonly links?: readonly ProjectLink[];
+}
+
+interface Props {
+  readonly project: ProjectCardModel;
+}
+
+const { project } = Astro.props;
+---
+
+<article class="project-card">
+  <div class="project-card-header">
+    <h2>{project.name}</h2>
+    <p class="project-status">
+      <span aria-hidden="true"></span>
+      {project.status}
+    </p>
+  </div>
+  <p>{project.description}</p>
+  {project.focusAreas !== undefined && project.focusAreas.length > 0 && (
+    <ul class="tag-list" aria-label={`${project.name} current focus`}>
+      {project.focusAreas.map((focusArea) => (
+        <li>{focusArea}</li>
+      ))}
+    </ul>
+  )}
+  {project.benchNotes !== undefined && project.benchNotes.length > 0 && (
+    <div class="bench-notes">
+      <p>On the bench</p>
+      <ul class="check-list">
+        {project.benchNotes.map((note) => (
+          <li>{note}</li>
+        ))}
+      </ul>
+    </div>
+  )}
+  {project.links !== undefined && project.links.length > 0 && (
+    <footer class="project-links">
+      {project.links.map((link) =>
+        link.url === undefined ? (
+          <span>{link.label}</span>
+        ) : (
+          <a href={link.url}>{link.label}</a>
+        ),
+      )}
+    </footer>
+  )}
+</article>

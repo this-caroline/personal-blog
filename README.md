@@ -1,5 +1,3 @@
-# caroline-marques.com
-
 Personal publishing hub for me :)
 
 This repository is the engineering foundation for a static-first public website focused on original writing, projects, profile discovery, and long-term maintainability.

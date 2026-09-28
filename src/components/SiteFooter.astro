@@ -1,0 +1,29 @@
+---
+import { siteIdentity } from "@config/site";
+
+const currentYear = new Date().getFullYear();
+const footerLinks = [
+  ...siteIdentity.profiles,
+  { label: "RSS", url: "/rss.xml" },
+] as const;
+---
+
+<footer class="site-footer">
+  <div>
+    <p class="footer-name">{siteIdentity.name}</p>
+    <p>{siteIdentity.professionalTitle}</p>
+    <p>{siteIdentity.location}</p>
+  </div>
+  <div class="footer-secondary">
+    <nav aria-label="Footer links">
+      {footerLinks.map((link) => (
+        <a href={link.url} rel={link.url.startsWith("http") ? "me" : undefined}>
+          {link.label}
+        </a>
+      ))}
+    </nav>
+    <p>
+      &copy; {currentYear} {siteIdentity.name}
+    </p>
+  </div>
+</footer>

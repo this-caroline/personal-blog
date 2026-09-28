@@ -6,18 +6,32 @@ export interface SocialProfile {
 export interface SiteIdentity {
   readonly name: string;
   readonly professionalTitle: string;
+  readonly location: string;
   readonly canonicalOrigin: URL;
   readonly description: string;
+  readonly socialImagePath: `/${string}`;
   readonly profiles: readonly SocialProfile[];
 }
 
-export const siteIdentity = {
+export const siteIdentity: SiteIdentity = {
   name: "Caroline Marques",
   professionalTitle: "Software Engineer",
+  location: "Munich, Germany",
   canonicalOrigin: new URL("https://caroline-marques.com"),
   description:
-    "Personal publishing hub for Caroline Marques",
-  profiles: [],
-} satisfies SiteIdentity;
+    "Software engineering notes, personal projects, experiments, and other things from Caroline Marques.",
+  socialImagePath: "/social-preview.svg",
+  profiles: [
+    { label: "BoardGameGeek", url: "https://boardgamegeek.com/profile/ex_emo" },
+  ],
+};
 
-export const siteTitle = `${siteIdentity.name}, ${siteIdentity.professionalTitle}`;
+export const homePageTitle = `${siteIdentity.name} — ${siteIdentity.professionalTitle}`;
+export const defaultTitleSuffix = siteIdentity.name;
+
+export const navigationLinks = [
+  { label: "Home", pathname: "/" },
+  { label: "Writing", pathname: "/writing" },
+  { label: "Projects", pathname: "/projects" },
+  { label: "About", pathname: "/about" },
+] as const;

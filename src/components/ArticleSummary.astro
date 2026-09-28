@@ -1,0 +1,33 @@
+---
+import {
+  formatArticleDate,
+  frontmatterFor,
+  type PublishedArticle,
+} from "@lib/writing";
+
+interface Props {
+  readonly article: PublishedArticle;
+}
+
+const { article } = Astro.props;
+const frontmatter = frontmatterFor(article.entry);
+---
+
+<article class="article-summary">
+  <p class="article-date">
+    <time datetime={frontmatter.publishedAt.toISOString()}>
+      {formatArticleDate(frontmatter.publishedAt)}
+    </time>
+  </p>
+  <h2>
+    <a href={article.url}>{frontmatter.title}</a>
+  </h2>
+  <p>{frontmatter.description}</p>
+  {frontmatter.tags.length > 0 && (
+    <ul class="tag-list" aria-label="Article tags">
+      {frontmatter.tags.map((tag) => (
+        <li>{tag}</li>
+      ))}
+    </ul>
+  )}
+</article>

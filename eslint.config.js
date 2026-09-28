@@ -76,6 +76,7 @@ export default defineConfig(
     files: ["**/*.astro"],
     rules: {
       "@typescript-eslint/no-confusing-void-expression": "off",
+      "@typescript-eslint/no-unsafe-return": "off",
       "import-x/no-unresolved": "off",
       "import-x/order": "off",
     },
