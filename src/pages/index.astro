@@ -13,8 +13,9 @@ import { createPublishedArticles } from "@lib/writing";
 
 const metadata = createPageMetadata({
   pathname: "/",
-  description:
-    "Caroline Marques writes about software engineering, architecture, infrastructure, practical AI, and the projects and ideas occupying her brain.",
+  description: `
+    ${siteIdentity.name} writes about software engineering, architecture, infrastructure, practical AI, and the projects and ideas occupying her brain.
+  `.trim(),
 });
 const articles = createPublishedArticles(await getCollection("writing")).slice(
   0,

@@ -7,9 +7,8 @@ import { createPageMetadata } from "@lib/metadata";
 
 const metadata = createPageMetadata({
   pathname: "/about",
-  fullTitle: "About Caroline Marques | Software Engineer",
-  description:
-    "About Caroline Marques, a software engineer in Munich, Germany building backend-leaning full-stack products, cloud infrastructure, practical local AI tools, and maintainable systems.",
+  fullTitle: `About ${siteIdentity.name} | ${siteIdentity.professionalTitle}`,
+  description: `About ${siteIdentity.name}, a software engineer in ${siteIdentity.location} building backend-leaning full-stack products, cloud infrastructure, practical local AI tools, and maintainable systems.`,
   type: "profile",
 });
 

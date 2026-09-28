@@ -30,7 +30,7 @@ const jsonLdGraphs = [createGlobalJsonLd(), ...jsonLd];
       rel="alternate"
       type="application/rss+xml"
       href="/rss.xml"
-      title="Caroline Marques RSS feed"
+      title={`${siteIdentity.name} RSS feed`}
     />
     <meta property="og:type" content={metadata.openGraphType} />
     <meta property="og:title" content={metadata.title} />

@@ -4,13 +4,13 @@ import { getCollection } from "astro:content";
 import ArticleSummary from "@components/ArticleSummary.astro";
 import BaseLayout from "@layouts/BaseLayout.astro";
 import { createPageMetadata } from "@lib/metadata";
+import { siteIdentity } from "@config/site";
 import { createPublishedArticles } from "@lib/writing";
 
 const metadata = createPageMetadata({
   pathname: "/writing",
   title: "Writing",
-  description:
-    "Notes by Caroline Marques on software engineering, architecture, infrastructure, local AI, and things she is learning.",
+  description: `Notes by ${siteIdentity.name} on software engineering, architecture, infrastructure, local AI, and things she is learning.`,
 });
 const articles = createPublishedArticles(await getCollection("writing"));
 ---

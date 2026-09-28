@@ -2,12 +2,12 @@
 import ProjectCard from "@components/ProjectCard.astro";
 import BaseLayout from "@layouts/BaseLayout.astro";
 import { createPageMetadata } from "@lib/metadata";
+import { siteIdentity } from "@config/site";
 
 const metadata = createPageMetadata({
   pathname: "/projects",
   title: "Projects",
-  description:
-    "In-progress projects and technical experiments by Caroline Marques, including local AI infrastructure and a personal grammar assistant.",
+  description: `In-progress projects and technical experiments by ${siteIdentity.name}, including local AI infrastructure and a personal grammar assistant.`,
 });
 
 import { projects } from "@config/projects";
