@@ -7,10 +7,10 @@ export interface PageMetadata {
   readonly description: string;
   readonly canonicalUrl: URL;
   readonly imageUrl: URL;
-  readonly imageType: `image/${string}`;
-  readonly imageWidth: number;
-  readonly imageHeight: number;
-  readonly imageAlt: string;
+  readonly imageType: `image/${string}` | undefined;
+  readonly imageWidth: number | undefined;
+  readonly imageHeight: number | undefined;
+  readonly imageAlt: string | undefined;
   readonly openGraphType: OpenGraphType;
   readonly noindex: boolean;
 }
@@ -40,10 +40,15 @@ export function createPageMetadata(input: PageMetadataInput): PageMetadata {
     description,
     canonicalUrl,
     imageUrl,
-    imageType: input.imageType ?? "image/png",
-    imageWidth: input.imageWidth ?? 1200,
-    imageHeight: input.imageHeight ?? 630,
-    imageAlt: input.imageAlt ?? siteIdentity.socialImageAlt,
+    imageType:
+      input.imageType ?? (input.image === undefined ? "image/png" : undefined),
+    imageWidth:
+      input.imageWidth ?? (input.image === undefined ? 1200 : undefined),
+    imageHeight:
+      input.imageHeight ?? (input.image === undefined ? 630 : undefined),
+    imageAlt:
+      input.imageAlt ??
+      (input.image === undefined ? siteIdentity.socialImageAlt : undefined),
     openGraphType: input.type ?? "website",
     noindex: input.noindex ?? false,
   };

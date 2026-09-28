@@ -12,6 +12,10 @@ export interface JsonLdNode {
   readonly [propertyName: string]: JsonLdValue;
 }
 
+export function serializeJsonLd(graph: JsonLdNode): string {
+  return JSON.stringify(graph).replaceAll("<", "\\u003c");
+}
+
 export const personSchemaId = new URL("#person", siteIdentity.canonicalOrigin)
   .href;
 

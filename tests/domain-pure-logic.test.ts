@@ -1,11 +1,16 @@
 import { describe, expect, it } from "vitest";
 
-import { createGlobalJsonLd, createBlogPostingJsonLd } from "../src/lib/jsonLd";
+import {
+  createGlobalJsonLd,
+  createBlogPostingJsonLd,
+  serializeJsonLd,
+} from "../src/lib/jsonLd";
 import { createPageMetadata } from "../src/lib/metadata";
 import { buildRssFeedXml } from "../src/lib/rss";
 import {
   createPublishedArticles,
   estimateReadingMinutes,
+  formatArticleDate,
   type WritingEntry,
 } from "../src/lib/writing";
 
@@ -32,6 +37,13 @@ function createEntry(overrides: ArticleOverrides = {}): WritingEntry {
 }
 
 describe("writing logic", () => {
+  it.each(["2024-01-02T00:00:00.000Z", "2024-01-02T23:59:59.000Z"])(
+    "formats %s as its UTC calendar date",
+    (timestamp) => {
+      expect(formatArticleDate(new Date(timestamp))).toBe("January 2, 2024");
+    },
+  );
+
   it("includes drafts in development", () => {
     const draft = createEntry({ id: "draft", data: { draft: true } });
     expect(createPublishedArticles([draft], { dev: true })[0]?.entry).toBe(
@@ -162,10 +174,44 @@ describe("metadata", () => {
     expect(metadata.imageUrl.href).toBe(
       "https://example.com/custom-preview.png",
     );
+    expect(metadata.imageType).toBeUndefined();
+    expect(metadata.imageWidth).toBeUndefined();
+    expect(metadata.imageHeight).toBeUndefined();
+    expect(metadata.imageAlt).toBeUndefined();
+  });
+
+  it("preserves explicitly supplied custom image metadata", () => {
+    const metadata = createPageMetadata({
+      pathname: "/writing/custom-image",
+      image: new URL("https://example.com/photo.webp"),
+      imageType: "image/webp",
+      imageWidth: 800,
+      imageHeight: 600,
+      imageAlt: "A mountain",
+    });
+    expect(metadata).toMatchObject({
+      imageType: "image/webp",
+      imageWidth: 800,
+      imageHeight: 600,
+      imageAlt: "A mountain",
+    });
   });
 });
 
 describe("JSON-LD", () => {
+  it("escapes script delimiters without changing structured content", () => {
+    const graph = createBlogPostingJsonLd({
+      canonicalUrl: new URL("https://example.com/writing/test"),
+      title: '</script><script>alert("title")</script>',
+      description: "<!-- </ScRiPt><img src=x onerror=alert(1)>",
+      publishedAt: new Date("2024-01-02"),
+    });
+    const serialized = serializeJsonLd(graph);
+    expect(serialized).not.toContain("<");
+    expect(serialized).toContain("\\u003c/script>");
+    expect(JSON.parse(serialized)).toEqual(graph);
+  });
+
   it("keeps the person entity stable and references it from blog posts", () => {
     const globalJsonLd = createGlobalJsonLd();
     const postJsonLd = createBlogPostingJsonLd({
@@ -190,6 +236,19 @@ describe("JSON-LD", () => {
 });
 
 describe("RSS feed", () => {
+  it("produces identical XML for identical inputs and an injected build date", () => {
+    const entries = [createEntry()];
+    const options = { dev: false, buildDate: new Date("2024-03-02T12:00:00Z") };
+    const xml = buildRssFeedXml(entries, options);
+    expect(buildRssFeedXml(entries, options)).toBe(xml);
+    expect(xml).toContain(
+      "<lastBuildDate>Sat, 02 Mar 2024 12:00:00 GMT</lastBuildDate>",
+    );
+    expect(buildRssFeedXml([], options)).toContain(
+      "<lastBuildDate>Sat, 02 Mar 2024 12:00:00 GMT</lastBuildDate>",
+    );
+  });
+
   it("escapes XML-sensitive content, omits drafts, and includes feed metadata", () => {
     const xml = buildRssFeedXml(
       [
@@ -203,7 +262,7 @@ describe("RSS feed", () => {
         }),
         createEntry({ id: "draft-post", data: { draft: true } }),
       ],
-      { dev: false },
+      { dev: false, buildDate: new Date("2024-03-02T12:00:00Z") },
     );
 
     expect(xml).toContain("Special &amp; &lt;tag&gt;");

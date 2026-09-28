@@ -5,9 +5,13 @@ import {
   type WritingEntry,
 } from "@lib/writing";
 
+interface RssFeedOptions extends CreatePublishedArticlesOptions {
+  readonly buildDate: Date;
+}
+
 export function buildRssFeedXml(
   entries: readonly WritingEntry[],
-  options: CreatePublishedArticlesOptions = {},
+  options: RssFeedOptions,
 ): string {
   const articles = createPublishedArticles(entries, options);
   const entriesXml = articles
@@ -27,7 +31,7 @@ export function buildRssFeedXml(
     <atom:link href="${siteIdentity.canonicalOrigin.href}rss.xml" rel="self" type="application/rss+xml" />
     <description>${escapeXml(siteIdentity.description)}</description>
     <language>en</language>
-    <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
+    <lastBuildDate>${options.buildDate.toUTCString()}</lastBuildDate>
     ${entriesXml}
   </channel>
 </rss>`;

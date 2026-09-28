@@ -2,7 +2,11 @@
 import SiteFooter from "@components/SiteFooter.astro";
 import SiteHeader from "@components/SiteHeader.astro";
 import { siteIdentity } from "@config/site";
-import { createGlobalJsonLd, type JsonLdNode } from "@lib/jsonLd";
+import {
+  createGlobalJsonLd,
+  serializeJsonLd,
+  type JsonLdNode,
+} from "@lib/jsonLd";
 import type { PageMetadata } from "@lib/metadata";
 
 import "../styles/global.css";
@@ -37,18 +41,28 @@ const jsonLdGraphs = [createGlobalJsonLd(), ...jsonLd];
     <meta property="og:description" content={metadata.description} />
     <meta property="og:url" content={metadata.canonicalUrl.href} />
     <meta property="og:image" content={metadata.imageUrl.href} />
-    <meta property="og:image:type" content={metadata.imageType} />
-    <meta property="og:image:width" content={String(metadata.imageWidth)} />
-    <meta property="og:image:height" content={String(metadata.imageHeight)} />
-    <meta property="og:image:alt" content={metadata.imageAlt} />
+    {metadata.imageType !== undefined && (
+      <meta property="og:image:type" content={metadata.imageType} />
+    )}
+    {metadata.imageWidth !== undefined && (
+      <meta property="og:image:width" content={String(metadata.imageWidth)} />
+    )}
+    {metadata.imageHeight !== undefined && (
+      <meta property="og:image:height" content={String(metadata.imageHeight)} />
+    )}
+    {metadata.imageAlt !== undefined && (
+      <meta property="og:image:alt" content={metadata.imageAlt} />
+    )}
     <meta property="og:site_name" content={siteIdentity.name} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={metadata.title} />
     <meta name="twitter:description" content={metadata.description} />
     <meta name="twitter:image" content={metadata.imageUrl.href} />
-    <meta name="twitter:image:alt" content={metadata.imageAlt} />
+    {metadata.imageAlt !== undefined && (
+      <meta name="twitter:image:alt" content={metadata.imageAlt} />
+    )}
     {jsonLdGraphs.map((graph) => (
-      <script type="application/ld+json" set:html={JSON.stringify(graph)} />
+      <script type="application/ld+json" set:html={serializeJsonLd(graph)} />
     ))}
   </head>
   <body>
