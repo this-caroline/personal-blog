@@ -6,100 +6,112 @@ import { buildRssFeedXml } from "../src/lib/rss";
 import {
   createPublishedArticles,
   estimateReadingMinutes,
+  type WritingEntry,
 } from "../src/lib/writing";
 
-interface MockArticleData {
-  readonly title: string;
-  readonly description: string;
-  readonly publishedAt: Date;
-  readonly updatedAt: Date | undefined;
-  readonly draft: boolean;
-  readonly tags: readonly string[];
-  readonly image: string | undefined;
-}
-
-interface MockArticleEntry {
-  readonly id: string;
-  readonly body: string;
-  readonly data: MockArticleData;
-}
-
-interface MockArticleOverrides {
+interface ArticleOverrides {
   readonly id?: string;
   readonly body?: string;
-  readonly data?: Partial<MockArticleData>;
-  readonly title?: string;
-  readonly description?: string;
-  readonly publishedAt?: Date;
-  readonly updatedAt?: Date;
-  readonly draft?: boolean;
-  readonly tags?: readonly string[];
-  readonly image?: string;
+  readonly data?: Partial<WritingEntry["data"]>;
 }
 
-function createEntry(overrides: MockArticleOverrides = {}): MockArticleEntry {
-  const baseData: MockArticleData = {
-    title: "Sample post",
-    description: "Example description",
-    publishedAt: new Date("2024-01-02T00:00:00.000Z"),
-    updatedAt: undefined,
-    draft: false,
-    tags: ["engineering"],
-    image: undefined,
-  };
-
-  const data: MockArticleData = {
-    ...baseData,
-    ...overrides.data,
-    ...(overrides.title !== undefined ? { title: overrides.title } : {}),
-    ...(overrides.description !== undefined
-      ? { description: overrides.description }
-      : {}),
-    ...(overrides.publishedAt !== undefined
-      ? { publishedAt: overrides.publishedAt }
-      : {}),
-    ...(overrides.updatedAt !== undefined
-      ? { updatedAt: overrides.updatedAt }
-      : {}),
-    ...(overrides.draft !== undefined ? { draft: overrides.draft } : {}),
-    ...(overrides.tags !== undefined ? { tags: overrides.tags } : {}),
-    ...(overrides.image !== undefined ? { image: overrides.image } : {}),
-  };
-
+function createEntry(overrides: ArticleOverrides = {}): WritingEntry {
   return {
     id: overrides.id ?? "sample-post",
+    collection: "writing",
     body: overrides.body ?? "one two three four five six seven eight nine ten",
-    data,
+    data: {
+      title: "Sample post",
+      description: "Example description",
+      publishedAt: new Date("2024-01-02T00:00:00.000Z"),
+      draft: false,
+      tags: ["engineering"],
+      ...overrides.data,
+    },
   };
 }
 
 describe("writing logic", () => {
+  it("includes drafts in development", () => {
+    const draft = createEntry({ id: "draft", data: { draft: true } });
+    expect(createPublishedArticles([draft], { dev: true })[0]?.entry).toBe(
+      draft,
+    );
+  });
+
+  it("handles an empty collection", () => {
+    expect(createPublishedArticles([], { dev: false })).toEqual([]);
+  });
+
+  it("treats a missing body as a one-minute article", () => {
+    const entry = createEntry();
+    delete entry.body;
+    expect(
+      createPublishedArticles([entry], { dev: false })[0]?.readingMinutes,
+    ).toBe(1);
+  });
+
+  it.each([false, true])("does not mutate inputs when dev is %s", (dev) => {
+    const older = createEntry({
+      id: "older",
+      data: { publishedAt: new Date("2020-01-01") },
+    });
+    const newer = createEntry({
+      id: "newer",
+      data: { publishedAt: new Date("2025-01-01") },
+    });
+    const entries = Object.freeze([older, newer]);
+    Object.freeze(older.data);
+    Object.freeze(newer.data);
+    Object.freeze(older);
+    Object.freeze(newer);
+    const articles = createPublishedArticles(entries, { dev });
+    expect(articles.map((article) => article.entry.id)).toEqual([
+      "newer",
+      "older",
+    ]);
+    expect(entries).toEqual([older, newer]);
+  });
+
+  it.each([
+    ["", 1],
+    ["   \n\t", 1],
+    ["word ".repeat(220), 1],
+    ["word ".repeat(221), 2],
+    ["word ".repeat(440), 2],
+    ["word ".repeat(441), 3],
+  ])("estimates reading minutes at word-count boundaries", (body, minutes) => {
+    expect(estimateReadingMinutes(body)).toBe(minutes);
+  });
+
   it("excludes drafts and sorts newest-first with id as a tiebreaker", () => {
     const entries = [
       createEntry({
         id: "older",
-        publishedAt: new Date("2023-01-01T00:00:00.000Z"),
+        data: { publishedAt: new Date("2023-01-01T00:00:00.000Z") },
       }),
       createEntry({
         id: "draft",
-        draft: true,
-        publishedAt: new Date("2025-01-01T00:00:00.000Z"),
+        data: {
+          draft: true,
+          publishedAt: new Date("2025-01-01T00:00:00.000Z"),
+        },
       }),
       createEntry({
         id: "newer",
-        publishedAt: new Date("2025-02-01T00:00:00.000Z"),
+        data: { publishedAt: new Date("2025-02-01T00:00:00.000Z") },
       }),
       createEntry({
         id: "zebra",
-        publishedAt: new Date("2025-02-01T00:00:00.000Z"),
+        data: { publishedAt: new Date("2025-02-01T00:00:00.000Z") },
       }),
       createEntry({
         id: "alpha",
-        publishedAt: new Date("2025-02-01T00:00:00.000Z"),
+        data: { publishedAt: new Date("2025-02-01T00:00:00.000Z") },
       }),
     ];
 
-    const articles = createPublishedArticles(entries as never[], {
+    const articles = createPublishedArticles(entries, {
       dev: false,
     });
 
@@ -113,7 +125,7 @@ describe("writing logic", () => {
 
   it("generates article urls from entry ids", () => {
     const articles = createPublishedArticles(
-      [createEntry({ id: "hello-world" })] as never[],
+      [createEntry({ id: "hello-world" })],
       { dev: false },
     );
 
@@ -164,12 +176,11 @@ describe("JSON-LD", () => {
       updatedAt: new Date("2024-02-03T00:00:00.000Z"),
       imageUrl: new URL("https://caroline-marques.com/social-preview.png"),
     });
-    const graph = globalJsonLd as {
-      "@graph": readonly [{ "@id": string }];
-    };
-    const personSchema = graph["@graph"][0];
-
-    expect(personSchema["@id"]).toBe("https://caroline-marques.com/#person");
+    expect(globalJsonLd["@graph"]).toContainEqual(
+      expect.objectContaining({
+        "@id": "https://caroline-marques.com/#person",
+      }),
+    );
     expect(postJsonLd.author).toEqual({
       "@id": "https://caroline-marques.com/#person",
     });
@@ -184,12 +195,14 @@ describe("RSS feed", () => {
       [
         createEntry({
           id: "escape-test",
-          title: "Special & <tag>",
-          description: 'A "quoted" post',
-          publishedAt: new Date("2024-03-01T00:00:00.000Z"),
+          data: {
+            title: "Special & <tag>",
+            description: 'A "quoted" post',
+            publishedAt: new Date("2024-03-01T00:00:00.000Z"),
+          },
         }),
-        createEntry({ id: "draft-post", draft: true }),
-      ] as never[],
+        createEntry({ id: "draft-post", data: { draft: true } }),
+      ],
       { dev: false },
     );
 

@@ -29,3 +29,53 @@ const Heading = headingLevel;
     </ul>
   )}
 </article>
+
+<style>
+  .article-summary {
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    background: var(--color-surface);
+    box-shadow: var(--shadow-subtle);
+    padding: 1.25rem;
+  }
+
+  .article-summary:hover {
+    border-color: var(--color-accent);
+    box-shadow: var(--shadow-pixel);
+    transform: translate(-1px, -1px);
+  }
+
+  .article-summary p {
+    color: var(--color-muted);
+  }
+
+  .article-summary h2 {
+    font-size: 1.35rem;
+  }
+
+  .article-date {
+    color: var(--color-warm);
+    font-size: 0.9rem;
+    font-weight: 750;
+    margin: 0;
+  }
+
+  .article-summary {
+    display: grid;
+    align-content: start;
+    gap: 0.8rem;
+  }
+
+  .article-summary h2 {
+    margin: 0;
+  }
+
+  .article-summary h2 a {
+    color: var(--color-text);
+    text-decoration-color: var(--color-border);
+  }
+
+  .article-summary h2 a:hover {
+    color: var(--color-accent-strong);
+  }
+</style>

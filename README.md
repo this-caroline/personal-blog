@@ -14,7 +14,8 @@ This repository is the engineering foundation for a static-first public website 
 
 ## Local Development
 
-Requires Node.js 22.12.0 or newer and pnpm 9.6.0.
+Use Node.js 22.22.3 (see `.nvmrc`) and pnpm 9.6.0 (see `packageManager`).
+The supported Node ranges are declared in `package.json`.
 
 ```bash
 pnpm install
@@ -44,4 +45,4 @@ The MIT license applies to the source code in this repository. Written articles,
 ## Agent Workflow
 
 Agents should make small, intentional changes; avoid unrelated refactors; keep identity metadata centralized; and preserve fast, crawlable HTML.
-Bad patterns should fail validation where practical.
+Automated checks cover specific invariants described in `docs/testing.md`; naming, semantic duplication, and architectural judgment also require review.

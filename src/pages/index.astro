@@ -4,8 +4,9 @@ import { getCollection } from "astro:content";
 
 import carolineSnowboardImage from "@assets/caroline-snowboard.png";
 import ArticleSummary from "@components/ArticleSummary.astro";
-import { currentSnapshot } from "@config/current";
-import { currentProjects } from "@config/projects";
+import { currentSnapshot, currentSnapshotEntries } from "@config/current";
+import { engineeringStories } from "@config/engineering-stories";
+import { projects } from "@config/projects";
 import { siteIdentity } from "@config/site";
 import BaseLayout from "@layouts/BaseLayout.astro";
 import { createPageMetadata } from "@lib/metadata";
@@ -25,33 +26,6 @@ const boardGameGeekProfile = siteIdentity.profiles.find(
   (profile) => profile.label === "BoardGameGeek",
 );
 
-const engineeringStories = [
-  {
-    title: "Japanese, beyond translated strings",
-    label: "Internationalization",
-    description:
-      "Led the rollout of Japanese for an international software product, from the first idea through implementation and delivery.",
-    technicalNote:
-      "The interesting part was treating language, locale, and product behavior as one system—not a bag of translated strings.",
-  },
-  {
-    title: "Long-lived keys → short-lived tokens",
-    label: "Infrastructure / OIDC",
-    description:
-      "I moved deployment authentication from long-lived AWS credentials to short-lived credentials through GitLab OIDC.",
-    technicalNote:
-      "It was a useful lesson in making the safer path the ordinary path across services.",
-  },
-  {
-    title: "Finding the sharp edges",
-    label: "Security / pentesting",
-    description:
-      "I worked directly with product security and pentesting, including hardening work that contributed to successful certification.",
-    technicalNote:
-      "The best part was following findings back into real product behavior instead of treating security as checklist theater.",
-  },
-] as const;
-
 interface SnapshotCardFrame {
   readonly name: string;
   readonly label: string;
@@ -59,35 +33,34 @@ interface SnapshotCardFrame {
   readonly detail?: string | undefined;
   readonly link?: {
     readonly label: string;
-    readonly url?: string | undefined; // Changed to optional
+    readonly url: string;
   };
 }
 
-// `currentProjects` is sourced from `src/config/projects.ts`
-
-const getEntry = (label: string) =>
-  currentSnapshot.entries.find((e) => e.label === label);
-
 const personalSnapshots: readonly SnapshotCardFrame[] = [
   {
-    name: getEntry("Offline")?.title ?? "Outside",
+    name: currentSnapshot.offline.title,
     label: "Mountains & climbing",
-    description: getEntry("Offline")?.description ?? "",
+    description: currentSnapshot.offline.description,
   },
   {
-    name: getEntry("Playing")?.title ?? "Board games",
+    name: currentSnapshot.playing.title,
     label: "Tabletop Games",
-    description: getEntry("Playing")?.description ?? "",
-    link: {
-      label: "See what I've been playing ->",
-      url: boardGameGeekProfile?.url,
-    },
+    description: currentSnapshot.playing.description,
+    ...(boardGameGeekProfile === undefined
+      ? {}
+      : {
+          link: {
+            label: "See what I've been playing ->",
+            url: boardGameGeekProfile.url,
+          },
+        }),
   },
   {
-    name: getEntry("Reading")?.title ?? "Books",
+    name: currentSnapshot.reading.title,
     label: "Last read",
-    description: getEntry("Reading")?.title ?? "",
-    detail: getEntry("Reading")?.description,
+    description: currentSnapshot.reading.title,
+    detail: currentSnapshot.reading.description,
   },
 ];
 ---
@@ -95,7 +68,7 @@ const personalSnapshots: readonly SnapshotCardFrame[] = [
 <BaseLayout metadata={metadata}>
   <section class="hero" aria-labelledby="page-title">
     <div class="hero-copy-column">
-      <p class="eyebrow">Software Engineer</p>
+      <p class="eyebrow">{siteIdentity.professionalTitle}</p>
       <h1 id="page-title">{siteIdentity.name}</h1>
       <p class="hero-copy">
         I build reliable software with a backend-leaning full-stack perspective,
@@ -118,7 +91,7 @@ const personalSnapshots: readonly SnapshotCardFrame[] = [
         <span class="status-light" aria-hidden="true"></span>
       </div>
       <dl class="status-list">
-        {currentSnapshot.entries.map((entry) => (
+        {currentSnapshotEntries.map((entry) => (
           <div>
             <dt>{entry.label}</dt>
             <dd>{entry.value}</dd>
@@ -177,7 +150,7 @@ const personalSnapshots: readonly SnapshotCardFrame[] = [
       </p>
     </div>
     <div class="workbench-grid">
-      {currentProjects.map((project, index) => (
+      {projects.map((project, index) => (
         <article class:list={["workbench-card", { featured: index === 0 }]}>
           <div class="workbench-card-header">
             <div>
@@ -186,19 +159,19 @@ const personalSnapshots: readonly SnapshotCardFrame[] = [
             </div>
             <span class="pixel-badge" aria-hidden="true"></span>
           </div>
-          <p>{project.description}</p>
+          <p>{project.homepage.description}</p>
           <ul class="focus-list" aria-label={`${project.name} current areas`}>
-            {project.focusAreas.map((focusArea) => (
+            {project.homepage.focusAreas.map((focusArea) => (
               <li>{focusArea}</li>
             ))}
           </ul>
-          {"terminalLines" in project && <pre
+          {project.homepage.terminalLines !== undefined && <pre
             class="terminal-note"
             aria-hidden="true"
           >
-              <code>{project.terminalLines.join("\n")}</code>
+              <code>{project.homepage.terminalLines.join("\n")}</code>
             </pre>}
-          <p class="project-status-note">{project.linkLabel}</p>
+          <p class="project-status-note">{project.homepage.statusNote}</p>
         </article>
       ))}
     </div>
@@ -219,7 +192,7 @@ const personalSnapshots: readonly SnapshotCardFrame[] = [
       </p>
     </div>
     <div class="story-grid">
-      {engineeringStories.map((story) => (
+      {engineeringStories.map(({ homepage: story }) => (
         <article class="story-card">
           <p class="story-label">{story.label}</p>
           <h3>{story.title}</h3>
@@ -267,3 +240,352 @@ const personalSnapshots: readonly SnapshotCardFrame[] = [
     </div>
   </section>
 </BaseLayout>
+
+<style>
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .compact-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .status-window {
+    border: 1px solid var(--color-text);
+    border-radius: 6px;
+    background:
+      linear-gradient(90deg, rgb(11 92 85 / 10%) 1px, transparent 1px) 0 0 /
+        12px 12px,
+      var(--color-paper-warm);
+    box-shadow:
+      8px 8px 0 var(--color-warm-muted),
+      var(--shadow-subtle);
+    overflow: hidden;
+  }
+
+  .status-window-bar {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    border-bottom: 1px solid var(--color-text);
+    background: var(--color-accent-strong);
+    color: #ffffff;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0;
+    padding: 0.55rem 0.75rem;
+    text-transform: uppercase;
+  }
+
+  .status-light,
+  .pixel-badge {
+    width: 0.75rem;
+    height: 0.75rem;
+    background: var(--color-warm-muted);
+    box-shadow: inset 0 0 0 2px rgb(22 32 29 / 18%);
+  }
+
+  .status-light {
+    background: #b8d46b;
+    animation: status-pulse 1.7s steps(2, end) infinite;
+  }
+
+  .status-list {
+    display: grid;
+    gap: 0.85rem;
+    margin: 0;
+    padding: 1rem 1rem 0.75rem;
+  }
+
+  .status-list div {
+    display: grid;
+    gap: 0.15rem;
+  }
+
+  .status-list dt {
+    color: var(--color-warm);
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    font-size: 0.74rem;
+    font-weight: 800;
+    letter-spacing: 0;
+    margin: 0;
+    text-transform: uppercase;
+  }
+
+  .status-list dd {
+    margin: 0;
+    font-weight: 750;
+  }
+
+  .status-updated {
+    border-top: 1px solid rgb(22 32 29 / 18%);
+    color: var(--color-muted);
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    font-size: 0.72rem;
+    margin: 0;
+    padding: 0.55rem 1rem;
+  }
+
+  .story-section {
+    position: relative;
+  }
+
+  .writing-section::before,
+  .story-section::before,
+  .workbench-section::before,
+  .personal-section::before {
+    content: "";
+    display: block;
+    width: min(16rem, 55vw);
+    height: 0.55rem;
+    background: linear-gradient(
+        90deg,
+        var(--color-accent-strong) 50%,
+        transparent 0
+      )
+      0 0 / 0.7rem 0.7rem;
+  }
+
+  .story-grid,
+  .personal-editorial-grid {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .story-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: stretch;
+  }
+
+  .writing-soon {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 1rem;
+    max-width: 50rem;
+    border: 1px dashed var(--color-accent);
+    border-radius: 6px;
+    background: rgb(238 244 242 / 72%);
+    padding: 1.25rem;
+  }
+
+  .writing-soon h3 {
+    margin-block: 0.25rem 0.65rem;
+  }
+
+  .writing-soon p:not(.story-label) {
+    color: var(--color-muted);
+  }
+
+  .writing-signal {
+    width: 0.85rem;
+    height: 0.85rem;
+    margin-block-start: 0.15rem;
+    background: var(--color-accent);
+    box-shadow:
+      0.4rem 0.4rem 0 var(--color-warm-muted),
+      0 0.8rem 0 var(--color-warm);
+  }
+
+  .editorial-image-frame {
+    border: 1px solid var(--color-text);
+    border-radius: 4px;
+    background: var(--color-surface);
+    box-shadow: 6px 6px 0 rgb(138 79 42 / 18%);
+    margin: 0;
+    overflow: hidden;
+    padding: 0.45rem;
+  }
+
+  .editorial-image-frame img {
+    width: 100%;
+    border: 1px solid rgb(22 32 29 / 18%);
+  }
+
+  .story-card,
+  .workbench-card,
+  .personal-tile {
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    background: var(--color-surface);
+    padding: 1.25rem;
+    transition:
+      border-color 160ms ease,
+      box-shadow 160ms ease,
+      transform 160ms ease;
+  }
+
+  .story-card {
+    display: grid;
+    gap: 0.75rem;
+    background: linear-gradient(180deg, var(--color-surface) 0, #fdfbf7 100%);
+  }
+
+  .story-card h3,
+  .workbench-card h3,
+  .personal-tile h3 {
+    font-size: 1.25rem;
+  }
+
+  .story-card p,
+  .workbench-card p,
+  .personal-tile p {
+    color: var(--color-muted);
+  }
+
+  .story-note {
+    border-left: 3px solid var(--color-warm-muted);
+    margin: 0;
+    padding-inline-start: 0.75rem;
+  }
+
+  .workbench-section {
+    border-block: 1px solid var(--color-border);
+    padding-block: 3rem;
+  }
+
+  .workbench-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.85fr);
+    gap: 1rem;
+  }
+
+  .workbench-card {
+    display: grid;
+    gap: 1rem;
+    background:
+      linear-gradient(90deg, rgb(15 118 110 / 8%) 1px, transparent 1px) 0 0 /
+        18px 18px,
+      var(--color-surface);
+  }
+
+  .workbench-card.featured {
+    border-color: var(--color-accent-strong);
+    background:
+      linear-gradient(90deg, rgb(15 118 110 / 10%) 1px, transparent 1px) 0 0 /
+        18px 18px,
+      var(--color-paper-warm);
+    box-shadow: var(--shadow-pixel);
+  }
+
+  .workbench-card-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .focus-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .focus-list li {
+    border: 1px solid var(--color-border);
+    background: rgb(255 255 255 / 70%);
+    color: var(--color-muted);
+    font-size: 0.86rem;
+    font-weight: 650;
+    padding: 0.25rem 0.55rem;
+  }
+
+  .terminal-note {
+    overflow-x: auto;
+    border: 1px solid rgb(22 32 29 / 22%);
+    border-radius: 4px;
+    background: var(--color-text);
+    color: var(--color-background);
+    font-size: 0.86rem;
+    line-height: 1.55;
+    margin: 0;
+    padding: 0.85rem;
+  }
+
+  .project-status-note,
+  .personal-detail {
+    color: var(--color-warm);
+    font-weight: 750;
+  }
+
+  .personal-editorial-grid {
+    grid-template-columns: minmax(13rem, 0.48fr) minmax(0, 1.52fr);
+    align-items: start;
+  }
+
+  .personal-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .personal-tile {
+    display: grid;
+    align-content: start;
+    min-height: 17rem;
+    background:
+      linear-gradient(135deg, transparent 0 78%, rgb(232 208 186 / 55%) 78%),
+      var(--color-surface);
+  }
+
+  .personal-tile:nth-child(1) {
+    background:
+      radial-gradient(
+        circle at 18% 22%,
+        var(--color-warm-muted) 0 0.35rem,
+        transparent 0.4rem
+      ),
+      radial-gradient(
+        circle at 72% 62%,
+        rgb(15 118 110 / 20%) 0 0.42rem,
+        transparent 0.47rem
+      ),
+      var(--color-surface);
+  }
+
+  .personal-image-frame img {
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    object-position: 50% 50%;
+  }
+
+  .story-card:hover,
+  .workbench-card:hover,
+  .personal-tile:hover {
+    border-color: var(--color-accent);
+    box-shadow: var(--shadow-pixel);
+    transform: translate(-1px, -1px);
+  }
+
+  @keyframes status-pulse {
+    50% {
+      opacity: 0.35;
+    }
+  }
+
+  @media (max-width: 820px) {
+    .compact-list,
+    .story-grid,
+    .workbench-grid,
+    .personal-editorial-grid,
+    .personal-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .personal-image-frame img {
+      height: auto;
+      max-height: none;
+      object-fit: contain;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .hero-actions {
+      width: 100%;
+    }
+  }
+</style>

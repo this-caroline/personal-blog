@@ -40,11 +40,19 @@ export default defineConfig(
       curly: ["error", "all"],
       eqeqeq: ["error", "always", { null: "ignore" }],
       "import-x/no-cycle": "error",
+      "import-x/first": "error",
       "import-x/no-unresolved": "off",
       "import-x/order": [
         "error",
         {
           alphabetize: { order: "asc", caseInsensitive: true },
+          pathGroups: [
+            {
+              pattern: "@{assets,components,config,layouts,lib,styles}/**",
+              group: "internal",
+            },
+          ],
+          pathGroupsExcludedImportTypes: ["builtin"],
           groups: [
             "builtin",
             "external",
@@ -71,14 +79,20 @@ export default defineConfig(
       ],
     },
   },
-  ...astro.configs["flat/recommended"],
+  ...astro.configs.recommended,
+  ...astro.configs["jsx-a11y-recommended"],
   {
     files: ["**/*.astro"],
+    languageOptions: {
+      parserOptions: {
+        projectService: false,
+        project: "./tsconfig.json",
+      },
+    },
     rules: {
       "@typescript-eslint/no-confusing-void-expression": "off",
       "@typescript-eslint/no-unsafe-return": "off",
       "import-x/no-unresolved": "off",
-      "import-x/order": "off",
     },
   },
 );

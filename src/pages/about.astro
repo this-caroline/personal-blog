@@ -1,7 +1,8 @@
 ---
-import BaseLayout from "@layouts/BaseLayout.astro";
 import { currentSnapshot } from "@config/current";
+import { engineeringStories } from "@config/engineering-stories";
 import { siteIdentity } from "@config/site";
+import BaseLayout from "@layouts/BaseLayout.astro";
 import { createProfilePageJsonLd } from "@lib/jsonLd";
 import { createPageMetadata } from "@lib/metadata";
 
@@ -48,29 +49,18 @@ const buildingPrinciples = [
 ] as const;
 
 const practiceNotes = [
-  {
-    label: "Internationalization",
-    description:
-      "Led the rollout of Japanese for an international software product, from the first idea through implementation and delivery.",
-  },
-  {
-    label: "Infrastructure",
-    description:
-      "Moved deployment authentication from long-lived AWS credentials to short-lived GitLab OIDC credentials.",
-  },
-  {
-    label: "Security",
-    description:
-      "Worked directly with security and pentesting efforts connected to successful product certification.",
-  },
+  ...engineeringStories.map((story) => story.about),
   {
     label: "Product engineering",
     description:
       "Built features across backend, frontend, cloud, and mobile boundaries, close enough to see where the real product edges were.",
   },
-] as const;
+];
 
-const currentInterests = currentSnapshot.entries.slice(0, 2);
+const currentInterests = [
+  currentSnapshot.building,
+  currentSnapshot.experimenting,
+];
 
 interface OutsideSoftwareCard {
   readonly label: string;
@@ -79,32 +69,34 @@ interface OutsideSoftwareCard {
   readonly detail?: string | undefined;
   readonly link?: {
     readonly label: string;
-    readonly url?: string | undefined;
+    readonly url: string;
   };
 }
 
 const outsideSoftware: readonly OutsideSoftwareCard[] = [
   {
-    label: "Bouldering",
-    title: "Climbing",
-    description:
-      "I climb a lot. You can usually find me working on V5s and V6s.",
+    label: currentSnapshot.offline.value,
+    title: currentSnapshot.offline.title,
+    description: currentSnapshot.offline.description,
   },
   {
-    label: "Board games",
-    title: "Tabletop Games",
-    description:
-      "I spend an unreasonable amount of time thinking about board games.",
-    link: {
-      label: "See what I've been playing ->",
-      url: boardGameGeekProfile?.url,
-    },
+    label: currentSnapshot.playing.value,
+    title: currentSnapshot.playing.title,
+    description: currentSnapshot.playing.description,
+    ...(boardGameGeekProfile === undefined
+      ? {}
+      : {
+          link: {
+            label: "See what I've been playing ->",
+            url: boardGameGeekProfile.url,
+          },
+        }),
   },
   {
-    label: "Last read",
-    title: "Books",
-    description: "Quarto de Despejo",
-    detail: "Carolina Maria de Jesus",
+    label: currentSnapshot.reading.value,
+    title: currentSnapshot.reading.title,
+    description: currentSnapshot.reading.value,
+    detail: currentSnapshot.reading.description,
   },
 ];
 ---
@@ -119,9 +111,10 @@ const outsideSoftware: readonly OutsideSoftwareCard[] = [
         <p class="eyebrow">About</p>
         <h1>{siteIdentity.name}</h1>
         <p class="about-intro">
-          Hi, I'm Caroline. I'm a software engineer in Munich, Germany, usually
-          working somewhere between backend systems, product development, and
-          the infrastructure that keeps both running.
+          Hi, I'm Caroline. I'm a {siteIdentity.professionalTitle.toLowerCase()}{" "}
+          in {siteIdentity.location}, usually working somewhere between backend
+          systems, product development, and the infrastructure that keeps both
+          running.
         </p>
         <p>
           I like software that still makes sense when someone opens the code six
@@ -256,17 +249,12 @@ const outsideSoftware: readonly OutsideSoftwareCard[] = [
         <p class="eyebrow">Elsewhere</p>
         <h2 id="links-title">Keep exploring</h2>
       </div>
-      <div class="about-links" aria-label="More about Caroline Marques">
+      <div class="about-links" aria-label={`More about ${siteIdentity.name}`}>
         <a href="/projects">Projects</a>
         <a href="/writing">Writing</a>
-        <a
-          href={
-            siteIdentity.profiles.find((p) => p.label === "BoardGameGeek")
-              ?.url ?? "https://boardgamegeek.com/profile/ex_emo"
-          }
-        >
-          BoardGameGeek
-        </a>
+        {boardGameGeekProfile !== undefined && (
+          <a href={boardGameGeekProfile.url}>BoardGameGeek</a>
+        )}
       </div>
     </section>
   </article>

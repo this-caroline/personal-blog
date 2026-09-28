@@ -26,14 +26,17 @@ Reusable pure logic belongs here when it has a clear purpose. Content parsing, m
 
 ### `src/config`
 
-Stable site identity, URLs, and shared constants belong here. Do not duplicate canonical identity metadata across pages.
+Stable site identity, URLs, and shared editorial records belong here. Do not duplicate canonical identity metadata across pages. Projects and engineering stories have one record per concept, with explicit page-specific copy where the presentation differs. Current snapshot entries use stable keys rather than display-label lookups.
 
 ### `src/styles`
 
-Global CSS belongs here. Prefer scoped component styles for component-specific presentation.
+Global CSS contains tokens, base typography, and styles genuinely shared across owners. Components and routes own their scoped styles, including associated breakpoints and animations. Rendered Markdown descendants use narrowly anchored `:global()` selectors inside the article route's scoped styles.
 
 ## Dependency Principles
 
+- Configuration depends only on other configuration within `src`.
+- Pure `lib` modules depend only on `lib` and configuration within `src`. Runtime Astro content loaders and asset APIs belong at route boundaries; type-only Astro imports are allowed.
+- Components do not import routes or layouts.
 - Pages compose layouts and components.
 - Components may depend on configuration and pure `lib` modules.
 - Content transformation belongs outside presentation components.
