@@ -24,6 +24,19 @@ function staticImportIsTypeOnly(clause: ts.ImportClause | undefined): boolean {
   );
 }
 
+function staticExportIsTypeOnly(node: ts.ExportDeclaration): boolean {
+  if (node.isTypeOnly) {
+    return true;
+  }
+  const bindings = node.exportClause;
+  return (
+    bindings !== undefined &&
+    ts.isNamedExports(bindings) &&
+    bindings.elements.length > 0 &&
+    bindings.elements.every((binding) => binding.isTypeOnly)
+  );
+}
+
 function staticImportReference(node: ts.Node): ImportReference | undefined {
   if (
     ts.isImportDeclaration(node) &&
@@ -39,14 +52,10 @@ function staticImportReference(node: ts.Node): ImportReference | undefined {
     node.moduleSpecifier !== undefined &&
     ts.isStringLiteral(node.moduleSpecifier)
   ) {
-    const bindings = node.exportClause;
-    const typeOnly =
-      node.isTypeOnly ||
-      (bindings !== undefined &&
-        ts.isNamedExports(bindings) &&
-        bindings.elements.length > 0 &&
-        bindings.elements.every((binding) => binding.isTypeOnly));
-    return { specifier: node.moduleSpecifier.text, typeOnly };
+    return {
+      specifier: node.moduleSpecifier.text,
+      typeOnly: staticExportIsTypeOnly(node),
+    };
   }
   return undefined;
 }
@@ -94,6 +103,40 @@ function collectImportReferences(
   return references;
 }
 
+function matchAliasReplacement(
+  specifier: string,
+  alias: string,
+): string | undefined {
+  const wildcard = alias.indexOf("*");
+  if (wildcard === -1) {
+    return specifier === alias ? "" : undefined;
+  }
+  const prefix = alias.slice(0, wildcard);
+  const suffix = alias.slice(wildcard + 1);
+  if (!specifier.startsWith(prefix) || !specifier.endsWith(suffix)) {
+    return undefined;
+  }
+  return specifier.slice(prefix.length, specifier.length - suffix.length);
+}
+
+function resolveAliasPath(
+  specifier: string,
+  options: ts.CompilerOptions,
+  repositoryRoot: string,
+): string | undefined {
+  for (const [alias, targets] of Object.entries(options.paths ?? {})) {
+    const replacement = matchAliasReplacement(specifier, alias);
+    const target = targets[0];
+    if (replacement !== undefined && target !== undefined) {
+      return path.resolve(
+        options.baseUrl ?? repositoryRoot,
+        target.replace("*", replacement),
+      );
+    }
+  }
+  return undefined;
+}
+
 function resolveSourcePath(
   specifier: string,
   filename: string,
@@ -109,31 +152,11 @@ function resolveSourcePath(
   if (resolved !== undefined) {
     return resolved.resolvedFileName;
   }
-  // TypeScript does not resolve Astro and image files. Still check their source-layer boundaries.
+
   if (specifier.startsWith(".")) {
     return path.resolve(path.dirname(filename), specifier);
   }
-  for (const [alias, targets] of Object.entries(options.paths ?? {})) {
-    const wildcard = alias.indexOf("*");
-    const prefix = wildcard === -1 ? alias : alias.slice(0, wildcard);
-    const suffix = wildcard === -1 ? "" : alias.slice(wildcard + 1);
-    const matches =
-      wildcard === -1
-        ? specifier === alias
-        : specifier.startsWith(prefix) && specifier.endsWith(suffix);
-    const target = targets[0];
-    if (matches && target !== undefined) {
-      const replacement = specifier.slice(
-        prefix.length,
-        specifier.length - suffix.length,
-      );
-      return path.resolve(
-        options.baseUrl ?? repositoryRoot,
-        target.replace("*", replacement),
-      );
-    }
-  }
-  return undefined;
+  return resolveAliasPath(specifier, options, repositoryRoot);
 }
 
 function sourceScripts(source: string, filename: string): string[] {

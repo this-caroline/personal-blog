@@ -1,0 +1,31 @@
+---
+import { currentSnapshot } from "@config/current";
+
+import styles from "./sections.module.css";
+
+const currentInterests = [
+  currentSnapshot.building,
+  currentSnapshot.experimenting,
+];
+---
+
+<section
+  class:list={["about-section current-section", styles["about-section"]]}
+  aria-labelledby="current-title"
+>
+  <div class="section-heading">
+    <p class="eyebrow">Currently</p>
+    <h2 id="current-title">Occupying my brain</h2>
+  </div>
+  <div class:list={["current-grid", styles["current-grid"]]}>
+    {currentInterests.map((interest) => (
+      <article class:list={["current-note", styles["current-note"]]}>
+        <p class:list={["status-label", styles["status-label"]]}>
+          {interest.label}
+        </p>
+        <h3>{interest.title}</h3>
+        <p>{interest.description}</p>
+      </article>
+    ))}
+  </div>
+</section>

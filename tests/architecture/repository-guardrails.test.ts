@@ -85,7 +85,9 @@ describe("repository architecture", () => {
     expect(identifiers.every((identifier) => identifier.length > 0)).toBe(true);
     expect(new Set(identifiers).size).toBe(identifiers.length);
   });
+});
 
+describe("source architecture", () => {
   it("respects source-layer dependency boundaries", async () => {
     const config = ts.getParsedCommandLineOfConfigFile(
       path.join(repositoryRoot, "tsconfig.json"),

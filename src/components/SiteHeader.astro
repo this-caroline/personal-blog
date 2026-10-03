@@ -1,6 +1,8 @@
 ---
 import { navigationLinks, siteIdentity } from "@config/site";
 
+import styles from "./SiteHeader.module.css";
+
 const currentPath = Astro.url.pathname;
 
 const isCurrentPage = (path: string): boolean => {
@@ -12,16 +14,19 @@ const isCurrentPage = (path: string): boolean => {
 };
 ---
 
-<header class="site-header">
+<header class:list={["site-header", styles["site-header"]]}>
   <a
-    class="identity-link"
+    class:list={["identity-link", styles["identity-link"]]}
     href="/"
     aria-label={`${siteIdentity.name} homepage`}
   >
     <span>{siteIdentity.name}</span>
     <span>{siteIdentity.professionalTitle}</span>
   </a>
-  <nav class="primary-nav" aria-label="Primary navigation">
+  <nav
+    class:list={["primary-nav", styles["primary-nav"]]}
+    aria-label="Primary navigation"
+  >
     {navigationLinks.map((link) => (
       <a
         href={link.pathname}
@@ -32,90 +37,3 @@ const isCurrentPage = (path: string): boolean => {
     ))}
   </nav>
 </header>
-
-<style>
-  .site-header {
-    width: min(100% - 2rem, 72rem);
-    margin-inline: auto;
-  }
-
-  .site-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    padding-block: 1rem;
-  }
-
-  .identity-link {
-    display: inline-flex;
-    flex-wrap: wrap;
-    gap: 0.35rem 0.55rem;
-    color: var(--color-text);
-    font-weight: 750;
-    text-decoration: none;
-  }
-
-  .identity-link::before {
-    content: "";
-    width: 0.7rem;
-    height: 0.7rem;
-    align-self: center;
-    background: var(--color-accent);
-    box-shadow:
-      0.28rem 0 var(--color-warm),
-      0 0.28rem var(--color-warm-muted);
-  }
-
-  .identity-link span:last-child {
-    color: var(--color-muted);
-    font-weight: 550;
-  }
-
-  .primary-nav {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.35rem 0.9rem;
-    align-items: center;
-  }
-
-  .primary-nav a {
-    border: 1px solid transparent;
-    border-radius: 4px;
-    color: var(--color-muted);
-    font-weight: 650;
-    padding: 0.35rem 0.65rem;
-    text-decoration: none;
-    transition:
-      background-color 160ms ease,
-      border-color 160ms ease,
-      color 160ms ease,
-      transform 160ms ease;
-  }
-
-  .primary-nav a:hover,
-  .primary-nav a[aria-current="page"] {
-    border-color: var(--color-border);
-    background: var(--color-surface-muted);
-    color: var(--color-text);
-  }
-
-  .primary-nav a:hover {
-    transform: translateY(-1px);
-  }
-
-  @media (max-width: 820px) {
-    .site-header {
-      align-items: flex-start;
-      flex-direction: column;
-    }
-
-    .primary-nav {
-      width: 100%;
-    }
-
-    .primary-nav a {
-      padding-inline: 0;
-    }
-  }
-</style>

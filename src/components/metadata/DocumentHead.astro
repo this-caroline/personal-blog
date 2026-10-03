@@ -1,0 +1,33 @@
+---
+import { siteIdentity } from "@config/site";
+import { serializeJsonLd, type JsonLdNode } from "@lib/jsonLd";
+import type { PageMetadata } from "@lib/metadata";
+
+import SocialMetadata from "./SocialMetadata.astro";
+
+interface Props {
+  readonly metadata: PageMetadata;
+  readonly jsonLdGraphs: readonly JsonLdNode[];
+}
+const { metadata, jsonLdGraphs } = Astro.props;
+---
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{metadata.title}</title>
+  <meta name="description" content={metadata.description} />
+  {metadata.noindex && <meta name="robots" content="noindex, nofollow" />}
+  <link rel="canonical" href={metadata.canonicalUrl.href} />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link
+    rel="alternate"
+    type="application/rss+xml"
+    href="/rss.xml"
+    title={`${siteIdentity.name} RSS feed`}
+  />
+  <SocialMetadata metadata={metadata} />
+  {jsonLdGraphs.map((graph) => (
+    <script type="application/ld+json" set:html={serializeJsonLd(graph)} />
+  ))}
+</head>

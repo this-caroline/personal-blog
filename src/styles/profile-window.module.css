@@ -1,0 +1,27 @@
+.window {
+  border: 1px solid var(--color-text);
+  border-radius: 6px;
+  background:
+    linear-gradient(90deg, rgb(11 92 85 / 10%) 1px, transparent 1px) 0 0 / 12px
+      12px,
+    var(--color-paper-warm);
+  box-shadow:
+    8px 8px 0 var(--color-warm-muted),
+    var(--shadow-subtle);
+  overflow: hidden;
+}
+
+.titleBar {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--color-text);
+  background: var(--color-accent-strong);
+  color: #ffffff;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  padding: 0.55rem 0.75rem;
+  text-transform: uppercase;
+}

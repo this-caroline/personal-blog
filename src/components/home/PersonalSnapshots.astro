@@ -1,0 +1,57 @@
+---
+import { Image } from "astro:assets";
+
+import carolineSnowboardImage from "@assets/caroline-snowboard.png";
+import { homepagePersonalSnapshots } from "@config/personal-snapshots";
+
+import styles from "./sections.module.css";
+---
+
+<section
+  class:list={["content-section personal-section", styles["personal-section"]]}
+  aria-labelledby="away-title"
+>
+  <div class="section-heading">
+    <h2 id="away-title">Elsewhere in my brain</h2>
+  </div>
+  <div
+    class:list={["personal-editorial-grid", styles["personal-editorial-grid"]]}
+  >
+    <figure
+      class:list={[
+        "editorial-image-frame personal-image-frame",
+        styles["editorial-image-frame"],
+        styles["personal-image-frame"],
+      ]}
+    >
+      <Image
+        src={carolineSnowboardImage}
+        alt="Bit-art illustration of Caroline holding a snowboard in a snowy mountain scene."
+        width={1086}
+        height={1448}
+        widths={[540, 1086]}
+        sizes="(max-width: 760px) 100vw, 50vw"
+        loading="lazy"
+      />
+    </figure>
+    <div class:list={["personal-grid", styles["personal-grid"]]}>
+      {homepagePersonalSnapshots.map((snapshot) => (
+        <article class:list={["personal-tile", styles["personal-tile"]]}>
+          <p class:list={["story-label", styles["story-label"]]}>
+            {snapshot.label}
+          </p>
+          <h3>{snapshot.title}</h3>
+          <p>{snapshot.description}</p>
+          {snapshot.detail !== undefined && (
+            <p class:list={["personal-detail", styles["personal-detail"]]}>
+              {snapshot.detail}
+            </p>
+          )}
+          {snapshot.link !== undefined && (
+            <a href={snapshot.link.url}>{snapshot.link.label}</a>
+          )}
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

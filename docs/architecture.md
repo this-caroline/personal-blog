@@ -30,7 +30,9 @@ Stable site identity, URLs, and shared editorial records belong here. Do not dup
 
 ### `src/styles`
 
-Global CSS contains tokens, base typography, and styles genuinely shared across owners. Components and routes own their scoped styles, including associated breakpoints and animations. Rendered Markdown descendants use narrowly anchored `:global()` selectors inside the article route's scoped styles.
+Global CSS contains tokens, base typography, and truly global styles. Components and routes own their scoped styles, including breakpoints and animations. CSS modules live beside their rendering owner; related Home, About, and article components may share a module within their component folder. Scoped styles shared across component folders live under `src/styles`.
+
+Existing global class names remain on elements that also receive module classes. Rendered Markdown descendants are styled through selectors anchored to the article body's module class.
 
 ## Dependency Principles
 

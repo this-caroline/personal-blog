@@ -1,0 +1,43 @@
+---
+import ArticleTags from "@components/ArticleTags.astro";
+import { siteIdentity } from "@config/site";
+import { formatArticleDate, type PublishedArticle } from "@lib/writing";
+
+import styles from "./article.module.css";
+
+interface Props {
+  readonly article: PublishedArticle;
+}
+const { article } = Astro.props;
+const frontmatter = article.entry.data;
+---
+
+<dl class:list={["article-meta", styles["article-meta"]]}>
+  <div>
+    <dt>Author</dt>
+    <dd>{siteIdentity.name}</dd>
+  </div>
+  <div>
+    <dt>Published</dt>
+    <dd>
+      <time datetime={frontmatter.publishedAt.toISOString()}>
+        {formatArticleDate(frontmatter.publishedAt)}
+      </time>
+    </dd>
+  </div>
+  {frontmatter.updatedAt !== undefined && (
+    <div>
+      <dt>Updated</dt>
+      <dd>
+        <time datetime={frontmatter.updatedAt.toISOString()}>
+          {formatArticleDate(frontmatter.updatedAt)}
+        </time>
+      </dd>
+    </div>
+  )}
+  <div>
+    <dt>Reading time</dt>
+    <dd>{article.readingMinutes} min read</dd>
+  </div>
+</dl>
+<ArticleTags tags={frontmatter.tags} />

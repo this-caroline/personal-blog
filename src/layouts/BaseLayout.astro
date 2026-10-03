@@ -1,12 +1,8 @@
 ---
+import DocumentHead from "@components/metadata/DocumentHead.astro";
 import SiteFooter from "@components/SiteFooter.astro";
 import SiteHeader from "@components/SiteHeader.astro";
-import { siteIdentity } from "@config/site";
-import {
-  createGlobalJsonLd,
-  serializeJsonLd,
-  type JsonLdNode,
-} from "@lib/jsonLd";
+import { createGlobalJsonLd, type JsonLdNode } from "@lib/jsonLd";
 import type { PageMetadata } from "@lib/metadata";
 
 import "../styles/global.css";
@@ -22,53 +18,8 @@ const jsonLdGraphs = [createGlobalJsonLd(), ...jsonLd];
 
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{metadata.title}</title>
-    <meta name="description" content={metadata.description} />
-    {metadata.noindex && <meta name="robots" content="noindex, nofollow" />}
-    <link rel="canonical" href={metadata.canonicalUrl.href} />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link
-      rel="alternate"
-      type="application/rss+xml"
-      href="/rss.xml"
-      title={`${siteIdentity.name} RSS feed`}
-    />
-    <meta property="og:type" content={metadata.openGraphType} />
-    <meta property="og:title" content={metadata.title} />
-    <meta property="og:description" content={metadata.description} />
-    <meta property="og:url" content={metadata.canonicalUrl.href} />
-    <meta property="og:image" content={metadata.imageUrl.href} />
-    {metadata.imageType !== undefined && (
-      <meta property="og:image:type" content={metadata.imageType} />
-    )}
-    {metadata.imageWidth !== undefined && (
-      <meta property="og:image:width" content={String(metadata.imageWidth)} />
-    )}
-    {metadata.imageHeight !== undefined && (
-      <meta property="og:image:height" content={String(metadata.imageHeight)} />
-    )}
-    {metadata.imageAlt !== undefined && (
-      <meta property="og:image:alt" content={metadata.imageAlt} />
-    )}
-    <meta property="og:site_name" content={siteIdentity.name} />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={metadata.title} />
-    <meta name="twitter:description" content={metadata.description} />
-    <meta name="twitter:image" content={metadata.imageUrl.href} />
-    {metadata.imageAlt !== undefined && (
-      <meta name="twitter:image:alt" content={metadata.imageAlt} />
-    )}
-    {jsonLdGraphs.map((graph) => (
-      <script type="application/ld+json" set:html={serializeJsonLd(graph)} />
-    ))}
-  </head>
+  <DocumentHead metadata={metadata} jsonLdGraphs={jsonLdGraphs} />
   <body>
-    <a class="skip-link" href="#content">
-      Skip to content
-    </a>
     <SiteHeader />
     <main id="content">
       <slot />

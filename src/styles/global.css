@@ -11,6 +11,18 @@
   --color-accent-strong: #0b5c55;
   --color-warm: #8a4f2a;
   --color-warm-muted: #e8d0ba;
+  --background-offline-card:
+    radial-gradient(
+      circle at 18% 22%,
+      var(--color-warm-muted) 0 0.35rem,
+      transparent 0.4rem
+    ),
+    radial-gradient(
+      circle at 72% 62%,
+      rgb(15 118 110 / 20%) 0 0.42rem,
+      transparent 0.47rem
+    ),
+    var(--color-surface);
   --shadow-subtle: 0 18px 50px rgb(22 32 29 / 8%);
   --shadow-pixel: 4px 4px 0 rgb(11 92 85 / 18%);
   font-family:

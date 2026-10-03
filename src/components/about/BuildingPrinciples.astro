@@ -1,0 +1,50 @@
+---
+import styles from "./sections.module.css";
+
+const buildingPrinciples = [
+  {
+    title: "Make complexity earn its place",
+    description:
+      "Architecture should solve a problem that actually exists. I like clear boundaries and boring solutions when boring solutions are enough.",
+  },
+  {
+    title: "Production counts",
+    description:
+      "A feature is more than the happy path. Deployment, observability, authentication, migrations, and failure modes are part of the product too.",
+  },
+  {
+    title: "Leave the code better for the next person",
+    description:
+      "Readable systems scale better than clever ones. Developer experience matters when it removes friction without hiding important trade-offs.",
+  },
+  {
+    title: "Product details become architecture",
+    description:
+      "Internationalization, locale, authentication, and permissions eventually shape the system. Treating them as afterthoughts usually gets expensive.",
+  },
+] as const;
+---
+
+<section
+  class:list={[
+    "about-section principles-section",
+    styles["about-section"],
+    styles["principles-section"],
+  ]}
+  aria-labelledby="build-title"
+>
+  <div class="section-heading">
+    <h2 id="build-title">Things I care about when building software</h2>
+  </div>
+  <div class:list={["principle-grid", styles["principle-grid"]]}>
+    {buildingPrinciples.map((principle, index) => (
+      <section
+        class:list={["principle-note", styles["principle-note"]]}
+        aria-labelledby={`principle-${String(index)}`}
+      >
+        <h3 id={`principle-${String(index)}`}>{principle.title}</h3>
+        <p>{principle.description}</p>
+      </section>
+    ))}
+  </div>
+</section>

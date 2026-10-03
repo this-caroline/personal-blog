@@ -1,0 +1,29 @@
+---
+import styles from "./sections.module.css";
+---
+
+<section
+  class:list={[
+    "about-section short-version",
+    styles["about-section"],
+    styles["short-version"],
+  ]}
+  aria-labelledby="short-title"
+>
+  <div class="section-heading">
+    <p class="eyebrow">The short version</p>
+    <h2 id="short-title">How I ended up here</h2>
+  </div>
+  <div class:list={["short-version-copy", styles["short-version-copy"]]}>
+    <p>
+      I am a full-stack engineer with a backend bias. Most of the problems I
+      enjoy live around APIs, services, cloud infrastructure, authentication,
+      and product features that have to survive real production use.
+    </p>
+    <p>
+      I am particularly interested in the points where those things meet. A
+      feature is not really finished if deploying it is fragile, debugging it is
+      miserable, or the next engineer has to reverse-engineer why it works.
+    </p>
+  </div>
+</section>

@@ -40,7 +40,9 @@ import { currentSnapshot } from "@config/current";
       ),
     ).toContain("import-x/order");
   });
+});
 
+describe("Astro accessibility lint", () => {
   it("reports inaccessible Astro images", async () => {
     const results = await lintAstro('<img src="/example.png" />');
     expect(
@@ -56,7 +58,9 @@ import { currentSnapshot } from "@config/current";
     );
     expect(results.flatMap((result) => result.messages)).toEqual([]);
   });
+});
 
+describe("lint command", () => {
   it("fails the lint command on warnings without errors", () => {
     const [command, ...lintArguments] = packageManifest.scripts.lint.split(" ");
     expect(command).toBe("eslint");

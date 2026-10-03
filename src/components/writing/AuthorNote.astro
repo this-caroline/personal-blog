@@ -1,0 +1,13 @@
+---
+import { siteIdentity } from "@config/site";
+
+import styles from "./article.module.css";
+---
+
+<footer class:list={["author-note", styles["author-note"]]}>
+  <p>
+    Written by <a href="/about">{siteIdentity.name}</a>, a{" "}
+    {siteIdentity.professionalTitle.toLowerCase()} in {siteIdentity.location}{" "}
+    working across architecture, infrastructure, and product-minded software.
+  </p>
+</footer>

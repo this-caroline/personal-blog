@@ -1,0 +1,31 @@
+.project-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.project-list {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.workbench-note {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  max-width: 46rem;
+  border: 1px dashed var(--color-border);
+  background: var(--color-paper-warm);
+  padding: 0.85rem 1rem;
+}
+
+.workbench-note > span {
+  flex: 0 0 auto;
+  width: 0.75rem;
+  height: 0.75rem;
+  background: var(--color-warm);
+  box-shadow: 0.35rem 0.35rem 0 var(--color-warm-muted);
+}
+
+.workbench-note p {
+  color: var(--color-muted);
+  margin: 0;
+}

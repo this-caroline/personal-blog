@@ -1,0 +1,49 @@
+---
+import styles from "@components/writing/article.module.css";
+import ArticleHeader from "@components/writing/ArticleHeader.astro";
+import AuthorNote from "@components/writing/AuthorNote.astro";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { createBlogPostingJsonLd } from "@lib/jsonLd";
+import { createPageMetadata } from "@lib/metadata";
+import type { PublishedArticle } from "@lib/writing";
+
+interface Props {
+  readonly article: PublishedArticle;
+}
+const { article } = Astro.props;
+const frontmatter = article.entry.data;
+const metadata = createPageMetadata({
+  pathname: article.url,
+  title: frontmatter.title,
+  description: frontmatter.description,
+  type: "article",
+  ...(frontmatter.image === undefined ? {} : { image: frontmatter.image }),
+});
+const imageUrl =
+  frontmatter.image === undefined
+    ? undefined
+    : new URL(frontmatter.image, metadata.canonicalUrl);
+const articleJsonLdInput = {
+  canonicalUrl: metadata.canonicalUrl,
+  title: frontmatter.title,
+  description: frontmatter.description,
+  publishedAt: frontmatter.publishedAt,
+  ...(frontmatter.updatedAt === undefined
+    ? {}
+    : { updatedAt: frontmatter.updatedAt }),
+  ...(imageUrl === undefined ? {} : { imageUrl }),
+};
+---
+
+<BaseLayout
+  metadata={metadata}
+  jsonLd={[createBlogPostingJsonLd(articleJsonLdInput)]}
+>
+  <article class:list={["article-page", styles["article-page"]]}>
+    <ArticleHeader article={article} />
+    <div class:list={["article-body", styles["article-body"]]}>
+      <slot />
+    </div>
+    <AuthorNote />
+  </article>
+</BaseLayout>

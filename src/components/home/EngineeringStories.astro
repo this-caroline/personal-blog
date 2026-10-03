@@ -1,0 +1,30 @@
+---
+import { engineeringStories } from "@config/engineering-stories";
+
+import styles from "./sections.module.css";
+---
+
+<section
+  class:list={["content-section story-section", styles["story-section"]]}
+  aria-labelledby="featured-title"
+>
+  <div class="section-heading">
+    <h2 id="featured-title">A few interesting problems I've worked on</h2>
+    <p class="section-intro">
+      Not an employment timeline—just three problems that changed how I think
+      about building software.
+    </p>
+  </div>
+  <div class:list={["story-grid", styles["story-grid"]]}>
+    {engineeringStories.map(({ homepage: story }) => (
+      <article class:list={["story-card", styles["story-card"]]}>
+        <p class:list={["story-label", styles["story-label"]]}>{story.label}</p>
+        <h3>{story.title}</h3>
+        <p>{story.description}</p>
+        <p class:list={["story-note", styles["story-note"]]}>
+          {story.technicalNote}
+        </p>
+      </article>
+    ))}
+  </div>
+</section>

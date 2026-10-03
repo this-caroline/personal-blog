@@ -1,5 +1,8 @@
 ---
+import ArticleTags from "@components/ArticleTags.astro";
 import { formatArticleDate, type PublishedArticle } from "@lib/writing";
+
+import styles from "./ArticleSummary.module.css";
 
 interface Props {
   readonly article: PublishedArticle;
@@ -11,8 +14,8 @@ const frontmatter = article.entry.data;
 const Heading = headingLevel;
 ---
 
-<article class="article-summary">
-  <p class="article-date">
+<article class:list={["article-summary", styles["article-summary"]]}>
+  <p class:list={["article-date", styles["article-date"]]}>
     <time datetime={frontmatter.publishedAt.toISOString()}>
       {formatArticleDate(frontmatter.publishedAt)}
     </time>
@@ -21,61 +24,5 @@ const Heading = headingLevel;
     <a href={article.url}>{frontmatter.title}</a>
   </Heading>
   <p>{frontmatter.description}</p>
-  {frontmatter.tags.length > 0 && (
-    <ul class="tag-list" aria-label="Article tags">
-      {frontmatter.tags.map((tag) => (
-        <li>{tag}</li>
-      ))}
-    </ul>
-  )}
+  <ArticleTags tags={frontmatter.tags} />
 </article>
-
-<style>
-  .article-summary {
-    border: 1px solid var(--color-border);
-    border-radius: 6px;
-    background: var(--color-surface);
-    box-shadow: var(--shadow-subtle);
-    padding: 1.25rem;
-  }
-
-  .article-summary:hover {
-    border-color: var(--color-accent);
-    box-shadow: var(--shadow-pixel);
-    transform: translate(-1px, -1px);
-  }
-
-  .article-summary p {
-    color: var(--color-muted);
-  }
-
-  .article-summary h2 {
-    font-size: 1.35rem;
-  }
-
-  .article-date {
-    color: var(--color-warm);
-    font-size: 0.9rem;
-    font-weight: 750;
-    margin: 0;
-  }
-
-  .article-summary {
-    display: grid;
-    align-content: start;
-    gap: 0.8rem;
-  }
-
-  .article-summary h2 {
-    margin: 0;
-  }
-
-  .article-summary h2 a {
-    color: var(--color-text);
-    text-decoration-color: var(--color-border);
-  }
-
-  .article-summary h2 a:hover {
-    color: var(--color-accent-strong);
-  }
-</style>

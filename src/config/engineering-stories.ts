@@ -14,51 +14,51 @@ export interface EngineeringStory {
 
 export const engineeringStories: readonly EngineeringStory[] = [
   {
-    id: "japanese-rollout",
+    id: "ev-home-charging",
     homepage: {
-      title: "Japanese, beyond translated strings",
-      label: "Internationalization",
+      title: "Building EV charging from specification to telemetry",
+      label: "Product / Distributed systems",
       description:
-        "Led the rollout of Japanese for an international software product, from the first idea through implementation and delivery.",
+        "I took a home-charging feature from early requirements through implementation and production delivery, including the telemetry flowing between vehicles, backend services, and the product.",
       technicalNote:
-        "The interesting part was treating language, locale, and product behavior as one system—not a bag of translated strings.",
+        "It taught me that the difficult part of an end-to-end feature isn't writing each piece—it's making every boundary agree on what happened.",
     },
     about: {
-      label: "Internationalization",
+      label: "Product / Distributed systems",
       description:
-        "Led the rollout of Japanese for an international software product, from the first idea through implementation and delivery.",
+        "Took a home-charging feature from early requirements through implementation and production delivery, including telemetry between vehicles, backend services, and the product.",
     },
   },
   {
     id: "deployment-oidc",
     homepage: {
-      title: "Long-lived keys → short-lived tokens",
+      title: "Killing long-lived deployment credentials",
       label: "Infrastructure / OIDC",
       description:
-        "I moved deployment authentication from long-lived AWS credentials to short-lived credentials through GitLab OIDC.",
+        "I migrated deployment authentication from persistent AWS credentials to short-lived credentials issued through GitLab OIDC across our services.",
       technicalNote:
-        "It was a useful lesson in making the safer path the ordinary path across services.",
+        "The useful lesson wasn't just about credentials: safer infrastructure works best when the secure path is also the boring, automatic path.",
     },
     about: {
       label: "Infrastructure",
       description:
-        "Moved deployment authentication from long-lived AWS credentials to short-lived GitLab OIDC credentials.",
+        "Migrated deployment authentication from persistent AWS credentials to short-lived credentials issued through GitLab OIDC across services.",
     },
   },
   {
-    id: "product-security",
+    id: "mtls-file-transfers",
     homepage: {
-      title: "Finding the sharp edges",
-      label: "Security / pentesting",
+      title: "Moving sensitive files without trusting the network",
+      label: "Security / Architecture",
       description:
-        "I worked directly with product security and pentesting, including hardening work that contributed to successful certification.",
+        "At BTG Pactual, I architected and implemented an mTLS solution for high-volume internal file transfers in the bank's back-office systems.",
       technicalNote:
-        "The best part was following findings back into real product behavior instead of treating security as checklist theater.",
+        "That changed how I think about security: don't rely on where a request comes from—make systems prove who they are.",
     },
     about: {
-      label: "Security",
+      label: "Security / Architecture",
       description:
-        "Worked directly with security and pentesting efforts connected to successful product certification.",
+        "Architected and implemented an mTLS solution for high-volume internal file transfers in BTG Pactual's back-office systems.",
     },
   },
 ];

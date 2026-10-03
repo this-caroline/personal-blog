@@ -1,0 +1,19 @@
+---
+import type { PublishedArticle } from "@lib/writing";
+
+import styles from "./article.module.css";
+import ArticleDetails from "./ArticleDetails.astro";
+
+interface Props {
+  readonly article: PublishedArticle;
+}
+const { article } = Astro.props;
+const frontmatter = article.entry.data;
+---
+
+<header class:list={["article-header", styles["article-header"]]}>
+  <p class="eyebrow">Writing</p>
+  <h1>{frontmatter.title}</h1>
+  <p>{frontmatter.description}</p>
+  <ArticleDetails article={article} />
+</header>

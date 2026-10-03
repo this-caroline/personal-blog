@@ -1,0 +1,35 @@
+---
+import { siteIdentity } from "@config/site";
+import type { PageMetadata } from "@lib/metadata";
+
+interface Props {
+  readonly metadata: PageMetadata;
+}
+const { metadata } = Astro.props;
+---
+
+<meta property="og:type" content={metadata.openGraphType} />
+<meta property="og:title" content={metadata.title} />
+<meta property="og:description" content={metadata.description} />
+<meta property="og:url" content={metadata.canonicalUrl.href} />
+<meta property="og:image" content={metadata.imageUrl.href} />
+{metadata.imageType !== undefined && (
+  <meta property="og:image:type" content={metadata.imageType} />
+)}
+{metadata.imageWidth !== undefined && (
+  <meta property="og:image:width" content={String(metadata.imageWidth)} />
+)}
+{metadata.imageHeight !== undefined && (
+  <meta property="og:image:height" content={String(metadata.imageHeight)} />
+)}
+{metadata.imageAlt !== undefined && (
+  <meta property="og:image:alt" content={metadata.imageAlt} />
+)}
+<meta property="og:site_name" content={siteIdentity.name} />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={metadata.title} />
+<meta name="twitter:description" content={metadata.description} />
+<meta name="twitter:image" content={metadata.imageUrl.href} />
+{metadata.imageAlt !== undefined && (
+  <meta name="twitter:image:alt" content={metadata.imageAlt} />
+)}

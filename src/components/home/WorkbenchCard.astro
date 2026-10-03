@@ -1,0 +1,51 @@
+---
+import type { Project } from "@config/projects";
+
+import styles from "./sections.module.css";
+
+interface Props {
+  readonly project: Project;
+  readonly featured: boolean;
+}
+const { project, featured } = Astro.props;
+---
+
+<article
+  class:list={[
+    "workbench-card",
+    styles["workbench-card"],
+    featured && styles.featured,
+    { featured },
+  ]}
+>
+  <div class:list={["workbench-card-header", styles["workbench-card-header"]]}>
+    <div>
+      <p class:list={["story-label", styles["story-label"]]}>
+        {project.status}
+      </p>
+      <h3>{project.name}</h3>
+    </div>
+    <span
+      class:list={["pixel-badge", styles["pixel-badge"]]}
+      aria-hidden="true"
+    ></span>
+  </div>
+  <p>{project.homepage.description}</p>
+  <ul
+    class:list={["focus-list", styles["focus-list"]]}
+    aria-label={`${project.name} current areas`}
+  >
+    {project.homepage.focusAreas.map((focusArea) => (
+      <li>{focusArea}</li>
+    ))}
+  </ul>
+  {project.homepage.terminalLines !== undefined && <pre
+    class:list={["terminal-note", styles["terminal-note"]]}
+    aria-hidden="true"
+  >
+              <code>{project.homepage.terminalLines.join("\n")}</code>
+            </pre>}
+  <p class:list={["project-status-note", styles["project-status-note"]]}>
+    {project.homepage.statusNote}
+  </p>
+</article>

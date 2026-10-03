@@ -1,0 +1,41 @@
+---
+import { aboutPersonalSnapshots } from "@config/personal-snapshots";
+
+import styles from "./sections.module.css";
+---
+
+<section
+  class:list={[
+    "about-section outside-section",
+    styles["about-section"],
+    styles["outside-section"],
+  ]}
+  aria-labelledby="outside-title"
+>
+  <div class="section-heading">
+    <h2 id="outside-title">When I'm not at a keyboard</h2>
+  </div>
+  <div class:list={["outside-grid", styles["outside-grid"]]}>
+    {aboutPersonalSnapshots.map((snapshot) => (
+      <article class:list={["outside-tile", styles["outside-tile"]]}>
+        <p class:list={["status-label", styles["status-label"]]}>
+          {snapshot.label}
+        </p>
+        <h3>{snapshot.title}</h3>
+        <p>{snapshot.description}</p>
+        {snapshot.detail !== undefined && (
+          <p class:list={["outside-detail", styles["outside-detail"]]}>
+            {snapshot.detail}
+          </p>
+        )}
+        {snapshot.link !== undefined && (
+          <a href={snapshot.link.url}>{snapshot.link.label}</a>
+        )}
+      </article>
+    ))}
+  </div>
+  <p class:list={["side-project-note", styles["side-project-note"]]}>
+    I also have a tendency to turn small annoyances into side projects, which is
+    how the local LLM setup and grammar assistant happened.
+  </p>
+</section>

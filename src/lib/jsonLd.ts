@@ -16,11 +16,9 @@ export function serializeJsonLd(graph: JsonLdNode): string {
   return JSON.stringify(graph).replaceAll("<", "\\u003c");
 }
 
-export const personSchemaId = new URL("#person", siteIdentity.canonicalOrigin)
-  .href;
+const personSchemaId = new URL("#person", siteIdentity.canonicalOrigin).href;
 
-export const websiteSchemaId = new URL("#website", siteIdentity.canonicalOrigin)
-  .href;
+const websiteSchemaId = new URL("#website", siteIdentity.canonicalOrigin).href;
 
 export function createGlobalJsonLd(): JsonLdNode {
   const sameAsUrls: string[] = [];

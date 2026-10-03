@@ -62,7 +62,9 @@ describe("writing logic", () => {
       createPublishedArticles([entry], { dev: false })[0]?.readingMinutes,
     ).toBe(1);
   });
+});
 
+describe("article immutability", () => {
   it.each([false, true])("does not mutate inputs when dev is %s", (dev) => {
     const older = createEntry({
       id: "older",
@@ -84,18 +86,9 @@ describe("writing logic", () => {
     ]);
     expect(entries).toEqual([older, newer]);
   });
+});
 
-  it.each([
-    ["", 1],
-    ["   \n\t", 1],
-    ["word ".repeat(220), 1],
-    ["word ".repeat(221), 2],
-    ["word ".repeat(440), 2],
-    ["word ".repeat(441), 3],
-  ])("estimates reading minutes at word-count boundaries", (body, minutes) => {
-    expect(estimateReadingMinutes(body)).toBe(minutes);
-  });
-
+describe("article publication", () => {
   it("excludes drafts and sorts newest-first with id as a tiebreaker", () => {
     const entries = [
       createEntry({
@@ -143,14 +136,18 @@ describe("writing logic", () => {
 
     expect(articles[0]?.url).toBe("/writing/hello-world");
   });
+});
 
-  it("estimates reading time sensibly", () => {
-    expect(
-      estimateReadingMinutes(
-        "one two three four five six seven eight nine ten",
-      ),
-    ).toBe(1);
-    expect(estimateReadingMinutes("one ".repeat(440))).toBe(2);
+describe("reading-time boundaries", () => {
+  it.each([
+    ["", 1],
+    ["   \n\t", 1],
+    ["word ".repeat(220), 1],
+    ["word ".repeat(221), 2],
+    ["word ".repeat(440), 2],
+    ["word ".repeat(441), 3],
+  ])("estimates reading minutes at word-count boundaries", (body, minutes) => {
+    expect(estimateReadingMinutes(body)).toBe(minutes);
   });
 });
 

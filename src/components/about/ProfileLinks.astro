@@ -1,0 +1,29 @@
+---
+import { siteIdentity } from "@config/site";
+
+import styles from "./sections.module.css";
+
+const boardGameGeekProfile = siteIdentity.profiles.find(
+  (profile) => profile.label === "BoardGameGeek",
+);
+---
+
+<section
+  class:list={["about-section links-section", styles["about-section"]]}
+  aria-labelledby="links-title"
+>
+  <div class="section-heading">
+    <p class="eyebrow">Elsewhere</p>
+    <h2 id="links-title">Keep exploring</h2>
+  </div>
+  <div
+    class:list={["about-links", styles["about-links"]]}
+    aria-label={`More about ${siteIdentity.name}`}
+  >
+    <a href="/projects">Projects</a>
+    <a href="/writing">Writing</a>
+    {boardGameGeekProfile !== undefined && (
+      <a href={boardGameGeekProfile.url}>BoardGameGeek</a>
+    )}
+  </div>
+</section>
