@@ -31,7 +31,7 @@ export const siteIdentity: SiteIdentity = {
   ],
 };
 
-export const homePageTitle = `${siteIdentity.name} — ${siteIdentity.professionalTitle}`;
+export const homePageTitle = siteIdentity.name;
 export const defaultTitleSuffix = siteIdentity.name;
 
 export const navigationLinks = [
