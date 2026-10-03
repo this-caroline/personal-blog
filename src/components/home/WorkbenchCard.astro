@@ -31,21 +31,4 @@ const { project, featured } = Astro.props;
     ></span>
   </div>
   <p>{project.homepage.description}</p>
-  <ul
-    class:list={["focus-list", styles["focus-list"]]}
-    aria-label={`${project.name} current areas`}
-  >
-    {project.homepage.focusAreas.map((focusArea) => (
-      <li>{focusArea}</li>
-    ))}
-  </ul>
-  {project.homepage.terminalLines !== undefined && <pre
-    class:list={["terminal-note", styles["terminal-note"]]}
-    aria-hidden="true"
-  >
-              <code>{project.homepage.terminalLines.join("\n")}</code>
-            </pre>}
-  <p class:list={["project-status-note", styles["project-status-note"]]}>
-    {project.homepage.statusNote}
-  </p>
 </article>

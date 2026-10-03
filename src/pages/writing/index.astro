@@ -9,8 +9,7 @@ import { createPublishedArticles } from "@lib/writing";
 const metadata = createPageMetadata({
   pathname: "/writing",
   title: "Writing",
-  description:
-    "Notes on software engineering, architecture, infrastructure, local AI, and things I’m learning.",
+  description: "Articles and notes by Caroline Marques.",
 });
 const articles = createPublishedArticles(await getCollection("writing"));
 ---
@@ -20,22 +19,12 @@ const articles = createPublishedArticles(await getCollection("writing"));
     <header class="page-header">
       <p class="eyebrow">Writing</p>
       <h1>Writing</h1>
-      <p>
-        Notes on software engineering, architecture, infrastructure, local AI,
-        and things I'm learning.
-      </p>
     </header>
 
     <section class="content-section" aria-label="Published articles">
       {articles.length === 0 ? (
         <div class="empty-state">
-          <p class="story-label">Writing soon</p>
-          <h2>The notebook is open.</h2>
-          <p>
-            I am working on field notes about local LLMs, deployment
-            authentication, internationalization, and the small engineering
-            lessons that are easy to lose if nobody writes them down.
-          </p>
+          <h2>No published articles yet.</h2>
         </div>
       ) : (
         <div class="article-list">

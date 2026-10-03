@@ -1,57 +1,66 @@
 ---
-import { currentSnapshotEntries } from "@config/current";
 import { siteIdentity } from "@config/site";
 import profileWindow from "@styles/profile-window.module.css";
 
 import styles from "./sections.module.css";
+const github = siteIdentity.profiles.find(
+  (profile) => profile.label === "GitHub",
+);
+const currentEntries = [
+  ["Building", "Local AI tools"],
+  ["Offline", "Bouldering"],
+  ["Playing", "Board games"],
+  ["Learning", "German"],
+] as const;
 ---
 
 <section class="hero" aria-labelledby="page-title">
   <div class="hero-copy-column">
     <p class="eyebrow">{siteIdentity.professionalTitle}</p>
-    <p class={styles["engineering-detail"]}>
-      {siteIdentity.location} · systems / infra / product
-    </p>
     <h1 id="page-title">{siteIdentity.name}</h1>
     <p class="hero-copy">
-      I build reliable software with a backend-leaning full-stack perspective, a
-      soft spot for architecture and infrastructure, and a practical curiosity
-      about AI that actually helps people get work done.
+      Software engineer building things across backend, product and
+      infrastructure.
+    </p>
+    <p>
+      Based in Munich. Usually debugging something, climbing something, or
+      buying another board game.
     </p>
     <div
       class:list={["hero-actions", styles["hero-actions"]]}
       aria-label="Primary links"
     >
       <a class:list={["button-link", styles["hero-cta"]]} href="/projects">
-        See what I'm building{" "}
+        Projects{" "}
         <span class={styles.arrow} aria-hidden="true">
           →
         </span>
       </a>
+      {github && (
+        <a class="button-link secondary" href={github.url}>
+          GitHub
+        </a>
+      )}
+      <a class="button-link secondary" href="/about">
+        About me
+      </a>
     </div>
   </div>
-
   <aside
     class:list={["status-window", profileWindow.window, styles["current-note"]]}
     aria-label="Caroline right now"
   >
     <div class:list={["status-window-bar", profileWindow.titleBar]}>
       <span>Currently</span>
-      <span
-        class:list={["status-light", styles["status-light"]]}
-        aria-hidden="true"
-      ></span>
+      <span class={styles["status-light"]} aria-hidden="true"></span>
     </div>
     <dl class:list={["status-list", styles["status-list"]]}>
-      {currentSnapshotEntries.map((entry) => (
+      {currentEntries.map(([label, value]) => (
         <div>
-          <dt>{entry.label}</dt>
-          <dd>{entry.value}</dd>
+          <dt>{label}</dt>
+          <dd>{value}</dd>
         </div>
       ))}
     </dl>
-    <p class:list={["status-updated", styles["status-updated"]]}>
-      Updated regularly
-    </p>
   </aside>
 </section>

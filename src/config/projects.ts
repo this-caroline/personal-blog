@@ -4,9 +4,6 @@ export interface Project {
   readonly status: string;
   readonly homepage: {
     readonly description: string;
-    readonly focusAreas: readonly string[];
-    readonly terminalLines?: readonly string[];
-    readonly statusNote: string;
   };
   readonly detail: {
     readonly description: string;
@@ -18,24 +15,11 @@ export interface Project {
 export const projects: readonly Project[] = [
   {
     id: "local-llm-infrastructure",
-    name: "Local LLM Home Infrastructure",
-    status: "In progress",
+    name: "Local AI infrastructure",
+    status: "in progress",
     homepage: {
       description:
-        "A local AI service and shared inference environment for personal applications and assistants.",
-      focusAreas: [
-        "local model serving",
-        "private inference",
-        "latency",
-        "model selection",
-        "application integrations",
-      ],
-      terminalLines: [
-        "$ ollama ps",
-        "local inference: online",
-        "cloud dependency: optional",
-      ],
-      statusNote: "GitHub soon - stay tuned.",
+        "Local inference for a few tools I keep building because apparently one side project is never enough.",
     },
     detail: {
       description:
@@ -50,23 +34,15 @@ export const projects: readonly Project[] = [
   },
   {
     id: "grammar-assistant",
-    name: "Personal Grammar Assistant",
-    status: "Exploring",
+    name: "Grammar assistant",
+    status: "experiment",
     homepage: {
-      description:
-        "A Chrome extension using a local LLM to correct grammar, suggest clearer phrasing, detect harsh or dismissive tone, and learn recurring writing mistakes.",
-      focusAreas: [
-        "browser APIs",
-        "frontend",
-        "local AI",
-        "privacy-minded product behavior",
-      ],
-      statusNote: "Designed around local inference and privacy.",
+      description: "A local grammar app to help me learn German faster.",
     },
     detail: {
       description:
-        "A browser extension experiment that uses a local LLM for grammar, phrasing, and tone without sending every half-finished sentence to the cloud.",
-      focusAreas: ["browser APIs", "local AI", "writing feedback"],
+        "A Chrome extension that connects browser text fields to a local LLM for German grammar feedback, helping me learn from recurring mistakes. Unfinished drafts stay on my machine that works as a server; the extension uses the shared inference layer rather than managing its own models.",
+      focusAreas: ["browser APIs", "local AI", "German grammar"],
       benchNotes: [
         "Finding feedback that is useful without becoming annoying",
         "Keeping local processing visible and trustworthy",

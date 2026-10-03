@@ -9,6 +9,7 @@
   --color-muted: #52615b;
   --color-accent: #0f766e;
   --color-accent-strong: #0b5c55;
+  --color-orange: #ad481f;
   --color-warm: #8a4f2a;
   --color-warm-muted: #e8d0ba;
   --background-offline-card:
@@ -65,7 +66,7 @@ a {
 }
 
 a:hover {
-  color: var(--color-warm);
+  color: var(--color-orange);
 }
 
 a:focus-visible,

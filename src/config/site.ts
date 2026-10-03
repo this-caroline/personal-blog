@@ -35,7 +35,6 @@ export const defaultTitleSuffix = siteIdentity.name;
 
 export const navigationLinks = [
   { label: "Home", pathname: "/" },
-  { label: "Writing", pathname: "/writing" },
   { label: "Projects", pathname: "/projects" },
   { label: "About", pathname: "/about" },
 ] as const;

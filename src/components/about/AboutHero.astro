@@ -5,27 +5,38 @@ import profileWindow from "@styles/profile-window.module.css";
 import styles from "./sections.module.css";
 
 const profileFacts = [
-  ["role", siteIdentity.professionalTitle],
-  ["location", siteIdentity.location],
-  ["bias", "backend-leaning full-stack"],
-  ["currently", "local AI + grammar tools"],
-  ["offline", "bouldering, games, books"],
+  ["based_in", "Munich 🇩🇪"],
+  ["originally", "Brazil 🇧🇷"],
+  ["climbing", "V5–V6"],
+  ["tabletop", "probably teaching someone a board game"],
+  ["headphones", "metalcore"],
+  ["first_web", "Naruto fan-blog, age 12"],
+  ["current_bug", "my English grammar"],
 ] as const;
 ---
 
 <header class:list={["about-hero", styles["about-hero"]]}>
   <div class:list={["about-hero-copy", styles["about-hero-copy"]]}>
-    <p class="eyebrow">About</p>
-    <h1>{siteIdentity.name}</h1>
+    <h1>Omg, hiii :D</h1>
     <p class:list={["about-intro", styles["about-intro"]]}>
-      Hi, I'm Caroline. I'm a {siteIdentity.professionalTitle.toLowerCase()} in{" "}
-      {siteIdentity.location}, usually working somewhere between backend
-      systems, product development, and the infrastructure that keeps both
-      running.
+      I'm Caroline, a Brazilian software engineer living in Munich.
     </p>
     <p>
-      I like software that still makes sense when someone opens the code six
-      months later.
+      I tend to end up in the awkward spaces between things: backend and
+      product, feature development and production, code and infrastructure.
+    </p>
+    <p>
+      I enjoy tracking down problems across services and figuring out how the
+      pieces interact.
+    </p>
+    <p>
+      I prefer straightforward architecture that fits the problem. I don't
+      really consider a feature finished if deploying it is terrifying or nobody
+      knows how to debug it six months later.
+    </p>
+    <p>
+      I had a Naruto fan-blog when I was 12. I've been building things on the
+      internet ever since.
     </p>
   </div>
 

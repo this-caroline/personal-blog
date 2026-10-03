@@ -1,10 +1,5 @@
 ---
 import AboutHero from "@components/about/AboutHero.astro";
-import Background from "@components/about/Background.astro";
-import BuildingPrinciples from "@components/about/BuildingPrinciples.astro";
-import CurrentInterests from "@components/about/CurrentInterests.astro";
-import EngineeringPractice from "@components/about/EngineeringPractice.astro";
-import OutsideSoftware from "@components/about/OutsideSoftware.astro";
 import ProfileLinks from "@components/about/ProfileLinks.astro";
 import styles from "@components/about/sections.module.css";
 import { siteIdentity } from "@config/site";
@@ -15,7 +10,7 @@ import { createPageMetadata } from "@lib/metadata";
 const metadata = createPageMetadata({
   pathname: "/about",
   fullTitle: `About ${siteIdentity.name} | ${siteIdentity.professionalTitle}`,
-  description: `About ${siteIdentity.name}, a software engineer in ${siteIdentity.location} building backend-leaning full-stack products, cloud infrastructure, practical local AI tools, and maintainable systems.`,
+  description: `About ${siteIdentity.name}, a software engineer in ${siteIdentity.location} on life between backend, product, code, and infrastructure.`,
   type: "profile",
 });
 ---
@@ -26,11 +21,6 @@ const metadata = createPageMetadata({
 >
   <article class:list={["about-page", styles["about-page"]]}>
     <AboutHero />
-    <Background />
-    <BuildingPrinciples />
-    <EngineeringPractice />
-    <CurrentInterests />
-    <OutsideSoftware />
     <ProfileLinks />
   </article>
 </BaseLayout>

@@ -1,4 +1,7 @@
 ---
+import { Image } from "astro:assets";
+
+import carolineJapan from "@assets/caroline-jp.png";
 import { engineeringStories } from "@config/engineering-stories";
 
 import styles from "./sections.module.css";
@@ -10,21 +13,29 @@ import styles from "./sections.module.css";
 >
   <div class="section-heading">
     <h2 id="featured-title">A few interesting problems I've worked on</h2>
-    <p class="section-intro">
-      Not an employment timeline—just three problems that changed how I think
-      about building software.
-    </p>
   </div>
-  <div class:list={["story-grid", styles["story-grid"]]}>
-    {engineeringStories.map(({ homepage: story }) => (
-      <article class:list={["story-card", styles["story-card"]]}>
-        <p class:list={["story-label", styles["story-label"]]}>{story.label}</p>
-        <h3>{story.title}</h3>
-        <p>{story.description}</p>
-        <p class:list={["story-note", styles["story-note"]]}>
-          {story.technicalNote}
-        </p>
-      </article>
-    ))}
+  <div class={styles["work-highlights"]}>
+    <Image
+      src={carolineJapan}
+      alt="Pixel-art illustration of Caroline among orange torii gates in Japan."
+      widths={[300, 600]}
+      sizes="(max-width: 820px) 220px, (max-width: 1100px) 280px, 300px"
+      format="webp"
+      loading="lazy"
+      class={styles["japan-image"]}
+    />
+    <div class:list={["story-grid", styles["story-grid"]]}>
+      {engineeringStories.map((story) => (
+        <article class:list={["story-card", styles["story-card"]]}>
+          <p class:list={["story-label", styles["story-label"]]}>
+            {story.number}
+          </p>
+          <h3>{story.title}</h3>
+          {story.paragraphs.map((paragraph) => (
+            <p>{paragraph}</p>
+          ))}
+        </article>
+      ))}
+    </div>
   </div>
 </section>

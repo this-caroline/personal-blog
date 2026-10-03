@@ -61,7 +61,7 @@
 .primary-nav a[aria-current="page"] {
   border-color: var(--color-border);
   background: var(--color-surface-muted);
-  color: var(--color-text);
+  color: var(--color-orange);
 }
 
 .primary-nav a:hover {

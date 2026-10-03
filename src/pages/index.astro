@@ -1,32 +1,21 @@
 ---
-import { getCollection } from "astro:content";
-
 import EngineeringStories from "@components/home/EngineeringStories.astro";
 import HomeHero from "@components/home/HomeHero.astro";
 import HomeWorkbench from "@components/home/HomeWorkbench.astro";
-import LatestWriting from "@components/home/LatestWriting.astro";
-import PersonalSnapshots from "@components/home/PersonalSnapshots.astro";
 import { siteIdentity } from "@config/site";
 import BaseLayout from "@layouts/BaseLayout.astro";
 import { createPageMetadata } from "@lib/metadata";
-import { createPublishedArticles } from "@lib/writing";
 
 const metadata = createPageMetadata({
   pathname: "/",
   description: `
-    ${siteIdentity.name} writes about software engineering, architecture, infrastructure, practical AI, and the projects and ideas occupying her brain.
+    ${siteIdentity.name}, a software engineer in Munich. Production software, side projects, and other things occupying her brain.
   `.trim(),
 });
-const articles = createPublishedArticles(await getCollection("writing")).slice(
-  0,
-  3,
-);
 ---
 
 <BaseLayout metadata={metadata}>
   <HomeHero />
-  <LatestWriting articles={articles} />
   <HomeWorkbench />
   <EngineeringStories />
-  <PersonalSnapshots />
 </BaseLayout>

@@ -27,7 +27,7 @@
 .profile-window-light {
   width: 0.75rem;
   height: 0.75rem;
-  background: #b8d46b;
+  background: var(--color-orange);
   box-shadow: inset 0 0 0 2px rgb(22 32 29 / 18%);
 }
 
@@ -255,4 +255,14 @@
   .practice-list p {
     grid-column: 2;
   }
+}
+
+.warning-signs {
+  margin-top: 2rem;
+}
+.warning-signs h2 {
+  margin-bottom: 1rem;
+}
+.profile-facts dt {
+  text-transform: none;
 }

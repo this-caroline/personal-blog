@@ -43,12 +43,13 @@
   align-items: center;
   gap: 0.45rem;
   white-space: nowrap;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
 }
 
 .project-status span {
   width: 0.65rem;
   height: 0.65rem;
-  background: var(--color-accent);
+  background: var(--color-orange);
   box-shadow: 2px 2px 0 var(--color-warm-muted);
 }
 

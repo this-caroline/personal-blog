@@ -376,3 +376,51 @@ aside.current-note {
     transform: none;
   }
 }
+
+/* Keep the illustration separate from the compact work cards. */
+.work-highlights {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+.japan-image {
+  width: 300px;
+  height: auto;
+  border-radius: 4px;
+}
+.story-grid {
+  align-items: start;
+}
+.story-card {
+  align-content: start;
+}
+.story-card p {
+  margin: 0;
+}
+.story-card .story-label {
+  color: var(--color-orange);
+}
+.pixel-badge,
+.status-light {
+  background: var(--color-orange);
+}
+@media (max-width: 1100px) {
+  .work-highlights {
+    grid-template-columns: 280px minmax(0, 1fr);
+  }
+  .japan-image {
+    width: 280px;
+  }
+  .work-highlights .story-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 820px) {
+  .work-highlights {
+    grid-template-columns: 1fr;
+  }
+  .japan-image {
+    width: 220px;
+  }
+}

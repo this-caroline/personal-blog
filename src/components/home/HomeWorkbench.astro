@@ -13,12 +13,7 @@ import WorkbenchCard from "./WorkbenchCard.astro";
   aria-labelledby="building-title"
 >
   <div class="section-heading">
-    <p class="eyebrow">Workbench</p>
     <h2 id="building-title">What I'm building</h2>
-    <p class="section-intro">
-      Useful tools, technical experiments, and ideas that are still allowed to
-      have rough edges.
-    </p>
   </div>
   <div class:list={["workbench-grid", styles["workbench-grid"]]}>
     {projects.map((project, index) => (
@@ -26,6 +21,6 @@ import WorkbenchCard from "./WorkbenchCard.astro";
     ))}
   </div>
   <p class="section-link">
-    <a href="/projects">Everything on the workbench →</a>
+    <a href="/projects">See all projects →</a>
   </p>
 </section>
