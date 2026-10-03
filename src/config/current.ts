@@ -34,7 +34,8 @@ export const currentSnapshot: Readonly<
     label: "Reading",
     title: "Beyond all Pity",
     value: "Beyond all Pity",
-    description: "It's a powerful, autobiographical diary detailing her life as a Black, single mother living in the Canindé favela in São Paulo between 1955 and 1960.",
+    description:
+      "It's a powerful, autobiographical diary detailing her life as a Black, single mother living in the Canindé favela in São Paulo between 1955 and 1960.",
     detail: "By Carolina Maria de Jesus.",
   },
   playing: {
