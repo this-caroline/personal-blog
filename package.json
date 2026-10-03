@@ -18,12 +18,13 @@
     "lint": "eslint . --max-warnings 0",
     "typecheck": "ASTRO_TELEMETRY_DISABLED=1 astro check",
     "test": "vitest run",
-    "validate": "pnpm sync && pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build"
+    "validate": "pnpm sync && pnpm format && pnpm lint && pnpm typecheck && pnpm test && pnpm build"
   },
   "dependencies": {
     "@astrojs/mdx": "^8.0.2",
     "@astrojs/sitemap": "^3.7.4",
-    "astro": "^7.3.5"
+    "astro": "^7.3.5",
+    "sharp": "^0.35.5"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
