@@ -26,6 +26,7 @@ export const siteIdentity: SiteIdentity = {
     "Caroline Marques social preview for caroline-marques.com with a software engineering theme.",
   profiles: [
     { label: "GitHub", url: "https://github.com/this-caroline" },
+    { label: "LinkedIn", url: "https://www.linkedin.com/in/caroline-marquesx" },
     { label: "BoardGameGeek", url: "https://boardgamegeek.com/profile/ex_emo" },
   ],
 };
